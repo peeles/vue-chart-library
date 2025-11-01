@@ -1,18 +1,35 @@
 import { computed } from 'vue'
-import { calculateNiceScale, getDataRange, formatNumber } from '@/utils/chartCalculations.js'
+import { calculateNiceScale, getDataRange, formatNumber, calculateStackedValues } from '@/utils/chartCalculations.js'
 
 /**
  * Composable for calculating chart scales and tick positions
  * @param {Object} datasets - Chart datasets
- * @param {Object} chartArea - Chart area dimensions
+ * @param {Object} chartArea - Chart area dimensions (can be a ref or computed with stacked property)
  * @param {Object} scaleConfig - Scale configuration
  * @returns {Object} - Scale utilities and tick generators
  */
 export function useChartScale(datasets, chartArea, scaleConfig = {}) {
   /**
+   * Check if stacked mode is enabled
+   */
+  const isStacked = computed(() => {
+    return chartArea.value?.stacked === true
+  })
+
+  /**
    * Calculate data range for Y axis
    */
   const dataRange = computed(() => {
+    if (isStacked.value) {
+      // For stacked charts, calculate range based on stacked totals
+      const stackedValues = calculateStackedValues(datasets.value)
+      if (stackedValues.length === 0) {
+        return { min: 0, max: 10 }
+      }
+      const min = Math.min(...stackedValues, 0)
+      const max = Math.max(...stackedValues)
+      return { min, max }
+    }
     return getDataRange(datasets.value)
   })
 
