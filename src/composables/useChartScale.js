@@ -88,14 +88,36 @@ export function useChartScale(datasets, chartArea, scaleConfig = {}) {
     /**
      * Generate X axis ticks with positions
      */
-    const generateXAxisTicks = (area, labels) => {
+    const generateXAxisTicks = (area, labels, options = {}) => {
         const ticks = []
         const labelCount = labels.length
+        const isFlush = options.flush === true
 
         if (labelCount === 0) return ticks
 
         labels.forEach((label, index) => {
-            const x = area.x + (area.width / labelCount) * (index + 0.5)
+            let x
+            let textAnchor = 'middle'
+
+            if (isFlush) {
+                // Flush mode: labels at edges
+                if (labelCount === 1) {
+                    x = area.x + area.width / 2
+                } else {
+                    x = area.x + (area.width / (labelCount - 1)) * index
+
+                    // Adjust text anchor for edge labels
+                    if (index === 0) {
+                        textAnchor = 'start'
+                    } else if (index === labelCount - 1) {
+                        textAnchor = 'end'
+                    }
+                }
+            } else {
+                // Centered mode: labels in segments
+                x = area.x + (area.width / labelCount) * (index + 0.5)
+            }
+
             const y = area.y + area.height
 
             ticks.push({
@@ -116,7 +138,7 @@ export function useChartScale(datasets, chartArea, scaleConfig = {}) {
                     x: x,
                     y: y + 20,
                     text: label,
-                    textAnchor: 'middle',
+                    textAnchor: textAnchor,
                     dominantBaseline: 'hanging'
                 }
             })

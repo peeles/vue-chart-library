@@ -97,44 +97,83 @@ watch(() => [props.visible, props.x, props.y], () => {
 <style scoped>
 .chart-tooltip {
     position: fixed;
-    background-color: var(--chart-tooltip-bg, rgba(0, 0, 0, 0.8));
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.97) 0%, rgba(31, 41, 55, 0.97) 100%);
+    backdrop-filter: blur(12px);
     color: var(--chart-tooltip-text, #ffffff);
-    padding: 0.75rem;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.8125rem;
+    box-shadow:
+        0 10px 15px -3px rgba(0, 0, 0, 0.3),
+        0 4px 6px -2px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
     z-index: 1000;
-    transition: opacity 0.2s;
-    max-width: 250px;
+    transition: opacity 0.15s ease-in-out, transform 0.15s ease-in-out;
+    transform: translateY(-2px);
+    max-width: 280px;
+    min-width: 120px;
+}
+
+.chart-tooltip[style*="opacity: 1"] {
+    animation: tooltipFadeIn 0.15s ease-out;
+}
+
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(-2px) scale(1);
+    }
 }
 
 .tooltip-title {
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.625rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: 0.875rem;
+    letter-spacing: -0.01em;
+    color: rgba(255, 255, 255, 0.95);
 }
 
 .tooltip-item {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.25rem 0;
+    gap: 0.625rem;
+    padding: 0.375rem 0;
+    line-height: 1.3;
+}
+
+.tooltip-item:first-of-type {
+    padding-top: 0;
+}
+
+.tooltip-item:last-of-type {
+    padding-bottom: 0;
 }
 
 .tooltip-marker {
-    width: 0.75rem;
-    height: 0.75rem;
+    width: 0.625rem;
+    height: 0.625rem;
     border-radius: 0.125rem;
     flex-shrink: 0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .tooltip-label {
     font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+    flex-shrink: 0;
 }
 
 .tooltip-value {
     margin-left: auto;
-    font-weight: 600;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 1);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
 }
 </style>

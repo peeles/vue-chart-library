@@ -392,6 +392,19 @@ function handleLegendToggle(event) {
 .pie-slice {
     transition: all 0.3s ease;
     cursor: default;
+    animation: sliceGrow 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+    transform-origin: center;
+}
+
+@keyframes sliceGrow {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 .pie-slice-interactive {

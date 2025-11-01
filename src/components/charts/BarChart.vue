@@ -227,6 +227,19 @@ function handleLegendToggle(event) {
 .bar {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+    animation: barGrowth 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+    transform-origin: bottom;
+}
+
+@keyframes barGrowth {
+    from {
+        transform: scaleY(0);
+        opacity: 0;
+    }
+    to {
+        transform: scaleY(1);
+        opacity: 1;
+    }
 }
 
 .bar-interactive {
@@ -236,11 +249,11 @@ function handleLegendToggle(event) {
 .bar-interactive:hover {
     opacity: 0.85;
     filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15));
-    transform: translateY(-2px);
+    transform: translateY(-2px) scaleY(1);
 }
 
 .bar-interactive:active {
-    transform: translateY(0);
+    transform: translateY(0) scaleY(1);
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 </style>

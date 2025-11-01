@@ -7,8 +7,15 @@ const config = {
   framework: {
     name: '@storybook/vue3-vite',
     options: {
-        docgen: true,
+      docgen: true,
     },
-  }
+  },
+  docs: {
+    autodocs: false,
+  },
+  core: {
+    disableTelemetry: true,
+  },
 }
+
 export default config

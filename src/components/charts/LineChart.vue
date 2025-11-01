@@ -1,4 +1,4 @@
-<template>
+    <template>
     <base-chart
         :data="data"
         :height="height"
@@ -178,7 +178,10 @@ function getYAxisTicks(chartArea) {
 }
 
 function getXAxisTicks(chartArea) {
-    return generateXAxisTicks(chartArea, labels.value)
+    const xAxisOptions = {
+        flush: scales.value?.x?.flush === true
+    }
+    return generateXAxisTicks(chartArea, labels.value, xAxisOptions)
 }
 
 // Calculate X position for a data point
@@ -186,7 +189,18 @@ function getXPosition(index, chartArea) {
     const labelCount = labels.value.length
     if (labelCount === 0) return chartArea.x
 
-    return chartArea.x + (chartArea.width / (labelCount - 1)) * index
+    const isFlush = scales.value?.x?.flush === true
+
+    if (isFlush) {
+        // Flush mode: points at edges
+        if (labelCount === 1) {
+            return chartArea.x + chartArea.width / 2
+        }
+        return chartArea.x + (chartArea.width / (labelCount - 1)) * index
+    } else {
+        // Centered mode: points in segment centers
+        return chartArea.x + (chartArea.width / labelCount) * (index + 0.5)
+    }
 }
 
 // Get data points with coordinates
@@ -311,6 +325,15 @@ function handleLegendToggle(event) {
 <style scoped>
 .line-path {
     transition: stroke-width 0.2s ease, opacity 0.2s ease;
+    stroke-dasharray: 3000;
+    stroke-dashoffset: 3000;
+    animation: lineDraw 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes lineDraw {
+    to {
+        stroke-dashoffset: 0;
+    }
 }
 
 .line-path-interactive {
@@ -324,10 +347,30 @@ function handleLegendToggle(event) {
 
 .line-area {
     transition: opacity 0.2s ease;
+    animation: areaFadeIn 0.8s ease-out 0.4s backwards;
+}
+
+@keyframes areaFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .data-point {
     transition: all 0.2s ease;
+    animation: pointFadeIn 0.6s ease-out backwards;
+}
+
+@keyframes pointFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .data-point-interactive {

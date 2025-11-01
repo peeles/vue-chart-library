@@ -264,6 +264,19 @@ function handleLegendToggle(event) {
 .stacked-bar {
     transition: opacity 0.2s ease;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.05));
+    animation: barGrowth 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+    transform-origin: bottom;
+}
+
+@keyframes barGrowth {
+    from {
+        transform: scaleY(0);
+        opacity: 0;
+    }
+    to {
+        transform: scaleY(1);
+        opacity: 1;
+    }
 }
 
 .stacked-bar-interactive {
