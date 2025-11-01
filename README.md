@@ -1,17 +1,17 @@
 # Vue Charts
 
-A customizable, fully-tested chart library for Vue 3 with Tailwind CSS 4 support.
+A customisable, fully-tested chart library for Vue 3 with Tailwind CSS 4 support.
 
 ## Features
 
-- 📊 **Multiple Chart Types**: Bar, Line, Pie, and Stacked charts
-- 🎨 **Fully Customizable**: Match Chart.js configuration patterns
-- 📱 **Responsive**: Charts adapt to container size automatically
-- ♿ **Accessible**: WCAG AA compliant with ARIA labels
-- 🎭 **Tailwind CSS 4**: Modern utility-first styling
-- 📚 **Storybook**: Interactive component documentation
-- ✅ **Full Test Coverage**: Vitest with >90% coverage target
-- 🚫 **No TypeScript**: Pure JavaScript with JSDoc for type hints
+- **Multiple Chart Types**: Bar, Line, Pie, and Stacked charts
+- **Fully Customizable**: Match Chart.js configuration patterns
+- **Responsive**: Charts adapt to container size automatically
+- **Accessible**: WCAG AA compliant with ARIA labels
+- **Tailwind CSS 4**: Modern utility-first styling
+- **Storybook**: Interactive component documentation
+- **Full Test Coverage**: Vitest with >90% coverage target
+- **No TypeScript**: Pure JavaScript with JSDoc for type hints
 
 ## Installation
 
