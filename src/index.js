@@ -8,6 +8,7 @@ export { default as BarChart } from './components/charts/BarChart.vue'
 export { default as ChartLegend } from './components/shared/ChartLegend.vue'
 export { default as ChartTooltip } from './components/shared/ChartTooltip.vue'
 export { default as ChartAxis } from './components/shared/ChartAxis.vue'
+export { default as ChartLoadingSpinner } from './components/shared/ChartLoadingSpinner.vue'
 
 // Composables
 export { useChartResize } from './composables/useChartResize.js'

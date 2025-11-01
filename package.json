@@ -1,7 +1,7 @@
 {
   "name": "@vue-charts/core",
   "version": "1.0.0",
-  "description": "A customizable chart library for Vue 3",
+  "description": "A customisable chart library for Vue 3",
   "type": "module",
   "main": "./dist/vue-charts.umd.cjs",
   "module": "./dist/vue-charts.js",
@@ -60,7 +60,7 @@
     "vue",
     "vue3",
     "charts",
-    "visualization",
+    "visualisation",
     "bar-chart",
     "line-chart",
     "pie-chart",

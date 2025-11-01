@@ -1,5 +1,5 @@
 import { ref, onMounted } from 'vue'
-import BarChart from './BarChart.vue'
+import BarChart from '../components/charts/BarChart.vue'
 
 /**
  * # BarChart Component

@@ -1,16 +1,17 @@
 # BarChart Component Documentation
 
-A fully responsive and customizable bar chart component for Vue 3 with a Chart.js-like API.
+A fully responsive and customisable bar chart component for Vue 3 with a Chart.js-like API.
 
 ## Features
 
 - ✅ **Responsive** - Automatically adapts to container size
 - ✅ **Interactive** - Hover tooltips and click events
-- ✅ **Customizable** - Full control over colors, spacing, and appearance
+- ✅ **Customisable** - Full control over colours, spacing, and appearance
 - ✅ **Accessible** - ARIA labels and keyboard navigation
 - ✅ **Multiple Datasets** - Support for comparing multiple data series
 - ✅ **SVG-based** - Scalable and performant rendering
 - ✅ **60fps animations** - Smooth transitions and interactions
+- ✅ **Loading States** - Built-in loading spinner with customisable messages
 
 ## Installation
 
@@ -60,8 +61,12 @@ const chartOptions = {
 |------|------|---------|-------------|
 | `data` | `Object` | **required** | Chart data including labels and datasets |
 | `options` | `Object` | `{}` | Chart configuration options |
-| `width` | `Number` | `null` | Fixed width (only if responsive is false) |
-| `height` | `Number` | `null` | Fixed height (only if responsive is false) |
+| `width` | `Number` | `null` | Fixed width (only when responsive is false) |
+| `height` | `Number` | `null` | Fixed height (only when responsive is false) |
+| `showLoading` | `Boolean` | `true` | Display loading spinner during initial render |
+| `loadingMessage` | `String` | `''` | Custom loading message text |
+| `loadingSpinnerSize` | `Number` | `40` | Loading spinner size in pixels |
+| `loadingDelay` | `Number` | `100` | Delay before hiding spinner (milliseconds) |
 
 ## Data Structure
 
@@ -78,10 +83,10 @@ const chartOptions = {
 
 ```typescript
 {
-  label: string                    // Dataset label (for legend)
-  data: number[]                   // Data values
-  backgroundColor: string | string[] // Bar background color(s)
-  borderColor?: string | string[]    // Bar border color(s)
+  label: string                      // Dataset label (for legend)
+  data: number[]                     // Data values
+  backgroundColor: string | string[] // Bar background colour(s)
+  borderColor?: string | string[]    // Bar border colour(s)
   borderWidth?: number               // Border width (default: 0)
 }
 ```
@@ -120,23 +125,23 @@ const chartOptions = {
       display: true,           // Show x-axis
       grid: {
         display: true,         // Show vertical grid lines
-        color: '#e5e7eb'      // Grid line color
+        color: '#e5e7eb'       // Grid line colour
       },
       ticks: {
         display: true,         // Show x-axis labels
-        color: '#6b7280'      // Label color
+        color: '#6b7280'       // Label colour
       }
     },
     y: {
       display: true,           // Show y-axis
-      beginAtZero: true,      // Start y-axis at zero
+      beginAtZero: true,       // Start y-axis at zero
       grid: {
         display: true,         // Show horizontal grid lines
-        color: '#e5e7eb'      // Grid line color
+        color: '#e5e7eb'       // Grid line colour
       },
       ticks: {
         display: true,         // Show y-axis labels
-        color: '#6b7280'      // Label color
+        color: '#6b7280'       // Label colour
       }
     }
   }
@@ -256,7 +261,7 @@ const data = {
 </script>
 ```
 
-### Custom Colors Per Bar
+### Custom Colours Per Bar
 
 ```vue
 <template>
@@ -286,7 +291,7 @@ const options = {
 ```vue
 <template>
   <div>
-    <button @click="randomizeData">Randomize</button>
+    <button @click="randomiseData">Randomise</button>
     <bar-chart
       :data="chartData"
       @bar-click="handleClick"
@@ -306,7 +311,7 @@ const chartData = ref({
   }]
 })
 
-function randomizeData() {
+function randomiseData() {
   chartData.value = {
     ...chartData.value,
     datasets: [{
@@ -350,7 +355,7 @@ const options = {
 
 ## Styling with CSS Variables
 
-Customize the chart appearance using CSS variables:
+Customise the chart appearance using CSS variables:
 
 ```css
 :root {
@@ -375,10 +380,10 @@ The BarChart component follows accessibility best practices:
 
 ## Performance
 
-The component is optimized for performance:
+The component is optimised for performance:
 
 - **60fps animations** using `requestAnimationFrame`
-- **Debounced resize** handling (16ms) for smooth responsive behavior
+- **Debounced resize** handling (16ms) for smooth responsive behaviour
 - **Efficient SVG rendering** for scalability
 - **Minimal re-renders** with Vue's reactivity system
 - Tested with **50+ data points** without performance degradation
@@ -396,7 +401,7 @@ All stories include explicit test cases covering:
 
 - ✓ Rendering without errors
 - ✓ Data accuracy
-- ✓ Responsive behavior
+- ✓ Responsive behaviour
 - ✓ Event handling
 - ✓ Edge cases (empty data, negative values, large datasets)
 - ✓ Performance metrics
@@ -409,13 +414,14 @@ View the interactive Storybook stories to see:
 1. **Default** - Basic single dataset chart
 2. **Multiple Datasets** - Year-over-year comparison
 3. **No Grid Lines** - Minimalist styling
-4. **Custom Colors** - Per-bar color customization
+4. **Custom Colours** - Per-bar colour customisation
 5. **Interactive** - Click events and dynamic updates
 6. **Small Data** - Edge case with minimal data points
 7. **Large Dataset** - Performance test with 50+ points
 8. **Empty State** - Handling zero values
 9. **Negative Values** - Support for negative data
 10. **Fixed Size** - Non-responsive chart
+11. **With Loading Spinner** - Loading states and spinner customisation
 
 Run Storybook:
 ```bash

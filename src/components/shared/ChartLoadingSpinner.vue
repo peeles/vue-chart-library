@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-const props = defineProps({
+defineProps({
   /**
    * Whether spinner is visible
    */
