@@ -7,10 +7,9 @@
     <svg
       class="chart-svg"
       :viewBox="`0 0 ${svgWidth} ${svgHeight}`"
-      :width="svgWidth"
-      :height="svgHeight"
       role="img"
       :aria-label="ariaLabel"
+      preserveAspectRatio="xMidYMid meet"
     >
       <slot
         :chart-area="chartArea"
@@ -87,7 +86,6 @@ const {
   isResponsive,
   shouldMaintainAspectRatio,
   aspectRatio,
-  padding,
   showLegend,
   calculateDimensions,
   calculateChartArea
@@ -126,7 +124,12 @@ const svgHeight = computed(() => {
 
   if (isResponsive.value && containerWidth.value > 0) {
     if (shouldMaintainAspectRatio.value) {
-      return svgWidth.value / aspectRatio.value
+      const calculatedHeight = svgWidth.value / aspectRatio.value
+      // If container has explicit height, use the minimum of calculated and container height
+      if (containerHeight.value > 0) {
+        return Math.min(calculatedHeight, containerHeight.value)
+      }
+      return calculatedHeight
     }
     return containerHeight.value || svgWidth.value / aspectRatio.value
   }
@@ -179,9 +182,14 @@ defineExpose({
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 .chart-svg {
   display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
 }
 </style>

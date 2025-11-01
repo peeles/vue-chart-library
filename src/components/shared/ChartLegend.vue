@@ -19,7 +19,7 @@
       <span
         class="legend-marker"
         :style="{ backgroundColor: dataset.backgroundColor }"
-      />
+      ></span>
       <span class="legend-label">{{ dataset.label }}</span>
     </div>
   </div>
@@ -34,7 +34,6 @@ const props = defineProps({
    */
   datasets: {
     type: Array,
-    required: true,
     default: () => []
   },
   /**

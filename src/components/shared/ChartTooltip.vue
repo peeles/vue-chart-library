@@ -21,7 +21,7 @@
         v-if="item.color"
         class="tooltip-marker"
         :style="{ backgroundColor: item.color }"
-      />
+      ></span>
       <span class="tooltip-label">{{ item.label }}:</span>
       <span class="tooltip-value">{{ item.value }}</span>
     </div>

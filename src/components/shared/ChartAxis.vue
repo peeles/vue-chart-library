@@ -78,7 +78,6 @@ const props = defineProps({
    */
   ticks: {
     type: Array,
-    required: true,
     default: () => []
   },
   /**
@@ -155,7 +154,7 @@ const axisLine = computed(() => {
 
 <style scoped>
 .axis-label {
-  font-family: var(--chart-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  font-family: var(--chart-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif),serif;
   user-select: none;
 }
 </style>

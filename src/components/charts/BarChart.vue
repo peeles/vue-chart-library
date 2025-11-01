@@ -7,7 +7,7 @@
     aria-label="Bar Chart"
     @legend-toggle="handleLegendToggle"
   >
-    <template #default="{ chartArea, width: svgWidth, height: svgHeight }">
+    <template #default="{ chartArea }">
       <!-- Y Axis -->
       <chart-axis
         v-if="scales.y?.display !== false"

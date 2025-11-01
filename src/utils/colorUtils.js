@@ -11,7 +11,7 @@ export const DEFAULT_COLORS = [
   '#ec4899', // pink
   '#14b8a6', // teal
   '#f97316', // orange-red
-  '#a855f7', // violet
+  '#a855f7' // violet
 ]
 
 /**
@@ -50,10 +50,10 @@ export function hexToRgb(hex) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
   return result
     ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
-      }
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    }
     : null
 }
 

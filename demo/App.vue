@@ -41,14 +41,28 @@
 
       <!-- Bar Chart -->
       <div class="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-        <div class="mb-4">
-          <h2 class="text-lg font-semibold text-gray-900">Sales Comparison</h2>
-          <p class="text-sm text-gray-600">Monthly sales data for 2023 vs 2024</p>
+        <div class="mb-4 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-semibold text-gray-900">Sales Comparison</h2>
+            <p class="text-sm text-gray-600">Monthly sales data for 2023 vs 2024</p>
+          </div>
+          <div v-if="showLegend" class="flex-shrink-0">
+            <div class="flex gap-4">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded bg-blue-600"></span>
+                <span class="text-sm text-gray-700">Sales 2024</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded bg-purple-600"></span>
+                <span class="text-sm text-gray-700">Sales 2023</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div style="height: 400px;">
+        <div class="h-96">
           <bar-chart
             :data="barChartData"
-            :options="chartOptions"
+            :options="updatedChartOptions"
             @bar-click="handleBarClick"
           />
         </div>
@@ -106,11 +120,11 @@ const showLegend = ref(true)
 const showGrid = ref(true)
 
 const barChartData = ref({
-  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
   datasets: [
     {
       label: 'Sales 2024',
-      data: [12, 19, 3, 5, 2, 8],
+      data: [12, 19, 3, 5, 2, 8, 9, 14, 11, 6, 10, 15],
       backgroundColor: '#3b82f6',
       borderColor: '#2563eb',
       borderWidth: 2
@@ -127,7 +141,7 @@ const barChartData = ref({
 
 const chartOptions = computed(() => ({
   responsive: true,
-  maintainAspectRatio: true,
+  maintainAspectRatio: false,
   plugins: {
     legend: {
       display: showLegend.value,
@@ -148,6 +162,16 @@ const chartOptions = computed(() => ({
         display: showGrid.value
       },
       beginAtZero: true
+    }
+  }
+}))
+
+const updatedChartOptions = computed(() => ({
+  ...chartOptions.value,
+  plugins: {
+    ...chartOptions.value.plugins,
+    legend: {
+      display: false // Hide internal legend, using custom one in header
     }
   }
 }))
