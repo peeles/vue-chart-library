@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  /* Chart color palette */
+  --color-chart-primary: #3b82f6;
+  --color-chart-secondary: #8b5cf6;
+  --color-chart-success: #10b981;
+  --color-chart-warning: #f59e0b;
+  --color-chart-danger: #ef4444;
+  --color-chart-info: #06b6d4;
+}
+
+:root {
+  /* Chart-specific CSS variables */
+  --chart-primary: var(--color-chart-primary);
+  --chart-secondary: var(--color-chart-secondary);
+  --chart-success: var(--color-chart-success);
+  --chart-warning: var(--color-chart-warning);
+  --chart-danger: var(--color-chart-danger);
+  --chart-info: var(--color-chart-info);
+
+  --chart-font-family: var(--font-family);
+  --chart-grid-color: #e5e7eb;
+  --chart-axis-color: #6b7280;
+  --chart-text-color: #374151;
+  --chart-tooltip-bg: rgba(0, 0, 0, 0.8);
+  --chart-tooltip-text: #ffffff;
+}
+
+/* Chart container styles */
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.chart-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Accessible focus styles */
+.chart-interactive:focus {
+  outline: 2px solid var(--chart-primary);
+  outline-offset: 2px;
+}

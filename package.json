@@ -1,0 +1,68 @@
+{
+  "name": "@vue-charts/core",
+  "version": "1.0.0",
+  "description": "A customizable chart library for Vue 3",
+  "type": "module",
+  "main": "./dist/vue-charts.umd.cjs",
+  "module": "./dist/vue-charts.js",
+  "exports": {
+    ".": {
+      "import": "./dist/vue-charts.js",
+      "require": "./dist/vue-charts.umd.cjs"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "lint": "eslint . --ext .js,.mjs,.vue --fix"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@storybook/addon-links": "^10.0.2",
+    "@storybook/vue3": "^10.0.2",
+    "@storybook/vue3-vite": "^10.0.2",
+    "@tailwindcss/vite": "^4.1.16",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vitest/coverage-v8": "^4.0.6",
+    "@vue/test-utils": "^2.4.6",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9.39.0",
+    "eslint-plugin-vue": "^10.5.1",
+    "happy-dom": "^20.0.10",
+    "postcss": "^8.4.49",
+    "storybook": "^10.0.2",
+    "tailwindcss": "^4.1.16",
+    "vite": "^7.1.12",
+    "vitest": "^4.0.6",
+    "vue": "^3.5.22"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/vue-fontawesome": "^3.0.8"
+  },
+  "keywords": [
+    "vue",
+    "vue3",
+    "charts",
+    "visualization",
+    "bar-chart",
+    "line-chart",
+    "pie-chart",
+    "stacked-chart"
+  ],
+  "author": "",
+  "license": "ISC"
+}
