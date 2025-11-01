@@ -1,0 +1,345 @@
+<template>
+  <base-chart
+    :data="data"
+    :options="options"
+    :width="width"
+    :height="height"
+    aria-label="Line Chart"
+    @legend-toggle="handleLegendToggle"
+  >
+    <template #default="{ chartArea }">
+      <!-- Y Axis -->
+      <chart-axis
+        v-if="scales.y?.display !== false"
+        axis="y"
+        :ticks="getYAxisTicks(chartArea)"
+        :chart-area="chartArea"
+        :show-grid="scales.y?.grid?.display !== false"
+        :show-line="true"
+        :show-ticks="scales.y?.ticks?.display !== false"
+        :show-labels="scales.y?.ticks?.display !== false"
+      />
+
+      <!-- X Axis -->
+      <chart-axis
+        v-if="scales.x?.display !== false"
+        axis="x"
+        :ticks="getXAxisTicks(chartArea)"
+        :chart-area="chartArea"
+        :show-grid="scales.x?.grid?.display !== false"
+        :show-line="true"
+        :show-ticks="scales.x?.ticks?.display !== false"
+        :show-labels="scales.x?.ticks?.display !== false"
+      />
+
+      <!-- Lines with Area Fills -->
+      <g class="lines-group">
+        <g
+          v-for="(dataset, datasetIndex) in visibleDatasets"
+          :key="datasetIndex"
+          :class="`dataset-${datasetIndex}`"
+        >
+          <!-- Area Fill -->
+          <path
+            v-if="dataset.fill"
+            :d="getAreaPath(dataset, datasetIndex, chartArea)"
+            :fill="dataset.backgroundColor || dataset.borderColor"
+            :opacity="dataset.fillOpacity || 0.2"
+            class="line-area"
+          />
+
+          <!-- Line Path -->
+          <path
+            :d="getLinePath(dataset, datasetIndex, chartArea)"
+            :stroke="dataset.borderColor"
+            :stroke-width="dataset.borderWidth || 2"
+            :stroke-dasharray="dataset.borderDash?.join(',') || ''"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="line-path"
+            :class="{ 'line-path-interactive': isInteractive }"
+          />
+
+          <!-- Data Points -->
+          <g
+            v-if="showPoints(dataset)"
+            class="data-points"
+          >
+            <circle
+              v-for="(point, pointIndex) in getDataPoints(dataset, datasetIndex, chartArea)"
+              :key="pointIndex"
+              :cx="point.x"
+              :cy="point.y"
+              :r="getPointRadius(dataset)"
+              :fill="dataset.pointBackgroundColor || dataset.backgroundColor || dataset.borderColor"
+              :stroke="dataset.pointBorderColor || dataset.borderColor"
+              :stroke-width="dataset.pointBorderWidth || 2"
+              class="data-point"
+              :class="{ 'data-point-interactive': isInteractive }"
+              @mouseenter="handlePointHover(pointIndex, datasetIndex, point.value, $event)"
+              @mouseleave="handlePointLeave"
+              @click="handlePointClick(pointIndex, datasetIndex, point.value)"
+              role="graphics-symbol"
+              :aria-label="`${data.labels[pointIndex]}: ${point.value}`"
+            >
+              <title>{{ data.labels[pointIndex] }}: {{ point.value }}</title>
+            </circle>
+          </g>
+        </g>
+      </g>
+
+      <!-- Tooltip -->
+      <chart-tooltip
+        :visible="tooltip.visible"
+        :tooltip-data="tooltip.data"
+        :x="tooltip.x"
+        :y="tooltip.y"
+      />
+    </template>
+  </base-chart>
+</template>
+
+<script setup>
+import { ref, computed, toRef } from 'vue'
+import BaseChart from './BaseChart.vue'
+import ChartAxis from '@/components/shared/ChartAxis.vue'
+import ChartTooltip from '@/components/shared/ChartTooltip.vue'
+import { useChartConfig } from '@/composables/useChartConfig.js'
+import { useChartData } from '@/composables/useChartData.js'
+import { useChartScale } from '@/composables/useChartScale.js'
+
+const props = defineProps({
+  /**
+   * Chart data
+   */
+  data: {
+    type: Object,
+    required: true
+  },
+  /**
+   * Chart options
+   */
+  options: {
+    type: Object,
+    default: () => ({})
+  },
+  /**
+   * Chart width
+   */
+  width: {
+    type: Number,
+    default: null
+  },
+  /**
+   * Chart height
+   */
+  height: {
+    type: Number,
+    default: null
+  }
+})
+
+const emit = defineEmits(['point-click', 'legend-toggle'])
+
+const optionsRef = toRef(props, 'options')
+const dataRef = toRef(props, 'data')
+
+const { config, scales } = useChartConfig(optionsRef)
+const { normalizedDatasets, labels } = useChartData(dataRef, optionsRef)
+
+const disabledDatasets = ref(new Set())
+const tooltip = ref({
+  visible: false,
+  data: null,
+  x: 0,
+  y: 0
+})
+
+// Filter visible datasets
+const visibleDatasets = computed(() => {
+  return normalizedDatasets.value.filter((_, index) => !disabledDatasets.value.has(index))
+})
+
+// Use chart scale composable
+const {
+  generateYAxisTicks,
+  generateXAxisTicks,
+  valueToY
+} = useChartScale(visibleDatasets, computed(() => ({})), scales)
+
+const isInteractive = computed(() => {
+  return config.value.plugins?.tooltip?.enabled !== false
+})
+
+// Generate axis ticks
+function getYAxisTicks(chartArea) {
+  return generateYAxisTicks(chartArea)
+}
+
+function getXAxisTicks(chartArea) {
+  return generateXAxisTicks(chartArea, labels.value)
+}
+
+// Calculate X position for a data point
+function getXPosition(index, chartArea) {
+  const labelCount = labels.value.length
+  if (labelCount === 0) return chartArea.x
+
+  return chartArea.x + (chartArea.width / (labelCount - 1)) * index
+}
+
+// Get data points with coordinates
+function getDataPoints(dataset, _datasetIndex, chartArea) {
+  return dataset.data.map((value, index) => ({
+    x: getXPosition(index, chartArea),
+    y: valueToY(value, chartArea),
+    value
+  }))
+}
+
+// Generate line path
+function getLinePath(dataset, datasetIndex, chartArea) {
+  const points = getDataPoints(dataset, datasetIndex, chartArea)
+  if (points.length === 0) return ''
+
+  const tension = dataset.tension || 0.4
+  const smooth = dataset.smooth !== false
+
+  if (!smooth || tension === 0) {
+    // Straight lines
+    return points.map((point, index) => {
+      return index === 0 ? `M ${point.x},${point.y}` : `L ${point.x},${point.y}`
+    }).join(' ')
+  }
+
+  // Smooth curved lines using cardinal spline
+  return generateSmoothPath(points, tension)
+}
+
+// Generate area fill path
+function getAreaPath(dataset, datasetIndex, chartArea) {
+  const points = getDataPoints(dataset, datasetIndex, chartArea)
+  if (points.length === 0) return ''
+
+  const linePath = getLinePath(dataset, datasetIndex, chartArea)
+  const baseY = chartArea.y + chartArea.height
+
+  // Close the path at the bottom
+  const firstPoint = points[0]
+  const lastPoint = points[points.length - 1]
+
+  return `${linePath} L ${lastPoint.x},${baseY} L ${firstPoint.x},${baseY} Z`
+}
+
+// Generate smooth path using cardinal spline interpolation
+function generateSmoothPath(points, tension) {
+  if (points.length < 2) return ''
+
+  let path = `M ${points[0].x},${points[0].y}`
+
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i > 0 ? i - 1 : i]
+    const p1 = points[i]
+    const p2 = points[i + 1]
+    const p3 = points[i + 2 < points.length ? i + 2 : i + 1]
+
+    const cp1x = p1.x + (p2.x - p0.x) / 6 * tension
+    const cp1y = p1.y + (p2.y - p0.y) / 6 * tension
+    const cp2x = p2.x - (p3.x - p1.x) / 6 * tension
+    const cp2y = p2.y - (p3.y - p1.y) / 6 * tension
+
+    path += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${p2.x},${p2.y}`
+  }
+
+  return path
+}
+
+// Check if points should be shown
+function showPoints(dataset) {
+  return dataset.showPoints !== false
+}
+
+// Get point radius
+function getPointRadius(dataset) {
+  return dataset.pointRadius || 4
+}
+
+// Event handlers
+function handlePointHover(pointIndex, datasetIndex, value, event) {
+  if (!isInteractive.value) return
+
+  const dataset = visibleDatasets.value[datasetIndex]
+
+  tooltip.value = {
+    visible: true,
+    x: event.clientX + 10,
+    y: event.clientY - 10,
+    data: {
+      title: labels.value[pointIndex],
+      items: [{
+        label: dataset.label,
+        value: value,
+        color: dataset.borderColor
+      }]
+    }
+  }
+}
+
+function handlePointLeave() {
+  tooltip.value.visible = false
+}
+
+function handlePointClick(pointIndex, datasetIndex, value) {
+  emit('point-click', {
+    label: labels.value[pointIndex],
+    datasetIndex,
+    value
+  })
+}
+
+function handleLegendToggle(event) {
+  if (disabledDatasets.value.has(event.index)) {
+    disabledDatasets.value.delete(event.index)
+  } else {
+    disabledDatasets.value.add(event.index)
+  }
+  emit('legend-toggle', event)
+}
+</script>
+
+<style scoped>
+.line-path {
+  transition: stroke-width 0.2s ease, opacity 0.2s ease;
+}
+
+.line-path-interactive {
+  cursor: pointer;
+}
+
+.line-path-interactive:hover {
+  stroke-width: 3;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.line-area {
+  transition: opacity 0.2s ease;
+}
+
+.data-point {
+  transition: all 0.2s ease;
+}
+
+.data-point-interactive {
+  cursor: pointer;
+}
+
+.data-point-interactive:hover {
+  r: 6;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.data-point-interactive:active {
+  r: 5;
+}
+</style>

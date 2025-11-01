@@ -1,7 +1,7 @@
 // Chart components
 export { default as BarChart } from './components/charts/BarChart.vue'
 export { default as StackedChart } from './components/charts/StackedChart.vue'
-// export { default as LineChart } from './components/charts/LineChart.vue'
+export { default as LineChart } from './components/charts/LineChart.vue'
 // export { default as PieChart } from './components/charts/PieChart.vue'
 
 // Shared components
