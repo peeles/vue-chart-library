@@ -10,7 +10,7 @@ export { default as ChartTooltip } from './components/shared/ChartTooltip.vue'
 export { default as ChartAxis } from './components/shared/ChartAxis.vue'
 export { default as ChartLoadingSpinner } from './components/shared/ChartLoadingSpinner.vue'
 
-// Composables
+// Composable
 export { useChartResize } from './composables/useChartResize.js'
 export { useChartData } from './composables/useChartData.js'
 export { useChartConfig } from './composables/useChartConfig.js'
@@ -18,7 +18,7 @@ export { useChartScale } from './composables/useChartScale.js'
 
 // Utilities
 export * from './utils/validators.js'
-export * from './utils/colorUtils.js'
+export * from './utils/colourUtils.js'
 export * from './utils/chartCalculations.js'
 
 // Styles

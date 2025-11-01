@@ -1,42 +1,42 @@
 <template>
-  <div
-    ref="containerRef"
-    class="chart-container"
-    :style="containerStyle"
-  >
-    <svg
-      class="chart-svg"
-      :class="{ 'chart-svg-loaded': !isLoading }"
-      :viewBox="`0 0 ${svgWidth} ${svgHeight}`"
-      role="img"
-      :aria-label="ariaLabel"
-      preserveAspectRatio="xMidYMid meet"
+    <div
+        ref="containerRef"
+        :style="containerStyle"
+        class="chart-container"
     >
-      <slot
-        :chart-area="chartArea"
-        :width="svgWidth"
-        :height="svgHeight"
-      />
-    </svg>
+        <svg
+            :aria-label="ariaLabel"
+            :class="{ 'chart-svg-loaded': !isLoading }"
+            :viewBox="`0 0 ${svgWidth} ${svgHeight}`"
+            class="chart-svg"
+            preserveAspectRatio="xMidYMid meet"
+            role="img"
+        >
+            <slot
+                :chart-area="chartArea"
+                :height="svgHeight"
+                :width="svgWidth"
+            />
+        </svg>
 
-    <chart-legend
-      v-if="showLegend && normalizedDatasets.length > 0"
-      :datasets="normalizedDatasets"
-      :position="legendPosition"
-      :interactive="legendInteractive"
-      @toggle="handleLegendToggle"
-    />
+        <chart-legend
+            v-if="showLegend && normalizedDatasets.length > 0"
+            :datasets="normalizedDatasets"
+            :interactive="legendInteractive"
+            :position="legendPosition"
+            @toggle="handleLegendToggle"
+        />
 
-    <chart-loading-spinner
-      :visible="isLoading"
-      :message="loadingMessage"
-      :size="loadingSpinnerSize"
-    />
-  </div>
+        <chart-loading-spinner
+            :message="loadingMessage"
+            :size="loadingSpinnerSize"
+            :visible="isLoading"
+        />
+    </div>
 </template>
 
 <script setup>
-import { ref, computed, toRef, watch, onMounted } from 'vue'
+import { computed, onMounted, ref, toRef, watch } from 'vue'
 import { useChartResize } from '@/composables/useChartResize.js'
 import { useChartConfig } from '@/composables/useChartConfig.js'
 import { useChartData } from '@/composables/useChartData.js'
@@ -44,69 +44,69 @@ import ChartLegend from '@/components/shared/ChartLegend.vue'
 import ChartLoadingSpinner from '@/components/shared/ChartLoadingSpinner.vue'
 
 const props = defineProps({
-  /**
-   * Chart data
-   */
-  data: {
-    type: Object,
-    required: true
-  },
-  /**
-   * Chart options
-   */
-  options: {
-    type: Object,
-    default: () => ({})
-  },
-  /**
-   * Chart width (if not responsive)
-   */
-  width: {
-    type: Number,
-    default: null
-  },
-  /**
-   * Chart height (if not responsive)
-   */
-  height: {
-    type: Number,
-    default: null
-  },
-  /**
-   * Aria label for accessibility
-   */
-  ariaLabel: {
-    type: String,
-    default: 'Chart'
-  },
-  /**
-   * Show loading spinner during initial load
-   */
-  showLoading: {
-    type: Boolean,
-    default: true
-  },
-  /**
-   * Loading message text
-   */
-  loadingMessage: {
-    type: String,
-    default: ''
-  },
-  /**
-   * Loading spinner size
-   */
-  loadingSpinnerSize: {
-    type: Number,
-    default: 40
-  },
-  /**
-   * Loading delay in ms before showing spinner
-   */
-  loadingDelay: {
-    type: Number,
-    default: 100
-  }
+    /**
+     * Chart data
+     */
+    data: {
+        type: Object,
+        required: true
+    },
+    /**
+     * Chart options
+     */
+    options: {
+        type: Object,
+        default: () => ({})
+    },
+    /**
+     * Chart width (if not responsive)
+     */
+    width: {
+        type: Number,
+        default: null
+    },
+    /**
+     * Chart height (if not responsive)
+     */
+    height: {
+        type: Number,
+        default: null
+    },
+    /**
+     * Aria label for accessibility
+     */
+    ariaLabel: {
+        type: String,
+        default: 'Chart'
+    },
+    /**
+     * Show loading spinner during initial load
+     */
+    showLoading: {
+        type: Boolean,
+        default: true
+    },
+    /**
+     * Loading message text
+     */
+    loadingMessage: {
+        type: String,
+        default: ''
+    },
+    /**
+     * Loading spinner size
+     */
+    loadingSpinnerSize: {
+        type: Number,
+        default: 40
+    },
+    /**
+     * Loading delay in ms before showing spinner
+     */
+    loadingDelay: {
+        type: Number,
+        default: 100
+    }
 })
 
 const emit = defineEmits(['legend-toggle', 'data-click'])
@@ -118,22 +118,22 @@ const optionsRef = toRef(props, 'options')
 const dataRef = toRef(props, 'data')
 
 const {
-  config,
-  isResponsive,
-  shouldMaintainAspectRatio,
-  aspectRatio,
-  showLegend,
-  calculateDimensions,
-  calculateChartArea
+    config,
+    isResponsive,
+    shouldMaintainAspectRatio,
+    aspectRatio,
+    showLegend,
+    calculateDimensions,
+    calculateChartArea
 } = useChartConfig(optionsRef)
 
 const {
-  normalizedDatasets,
-  isEmpty
+    normalizedDatasets,
+    isEmpty
 } = useChartData(dataRef, optionsRef)
 
 const { width: containerWidth, height: containerHeight } = useChartResize(
-  containerRef
+    containerRef
 )
 
 // Loading state
@@ -143,120 +143,120 @@ let resizeTimeout = null
 
 // Initial mount - hide loading after first render
 onMounted(() => {
-  if (props.showLoading) {
-    setTimeout(() => {
-      isLoading.value = false
-    }, props.loadingDelay)
-  }
+    if (props.showLoading) {
+        setTimeout(() => {
+            isLoading.value = false
+        }, props.loadingDelay)
+    }
 })
 
 // Watch for resize events and show brief loading state
 watch([containerWidth, containerHeight], () => {
-  if (containerWidth.value > 0 && containerHeight.value > 0 && !isLoading.value) {
-    isResizing.value = true
-    clearTimeout(resizeTimeout)
-    resizeTimeout = setTimeout(() => {
-      isResizing.value = false
-    }, 150)
-  }
+    if (containerWidth.value > 0 && containerHeight.value > 0 && !isLoading.value) {
+        isResizing.value = true
+        clearTimeout(resizeTimeout)
+        resizeTimeout = setTimeout(() => {
+            isResizing.value = false
+        }, 150)
+    }
 })
 
 // Calculate SVG dimensions
 const svgWidth = computed(() => {
-  if (!isResponsive.value && props.width) {
-    return props.width
-  }
+    if (!isResponsive.value && props.width) {
+        return props.width
+    }
 
-  if (isResponsive.value && containerWidth.value > 0) {
-    const { width } = calculateDimensions(
-      containerWidth.value,
-      containerHeight.value
-    )
-    return width
-  }
+    if (isResponsive.value && containerWidth.value > 0) {
+        const { width } = calculateDimensions(
+            containerWidth.value,
+            containerHeight.value
+        )
+        return width
+    }
 
-  return 600 // Default width
+    return 600 // Default width
 })
 
 const svgHeight = computed(() => {
-  if (!isResponsive.value && props.height) {
-    return props.height
-  }
-
-  if (isResponsive.value && containerWidth.value > 0) {
-    if (shouldMaintainAspectRatio.value) {
-      const calculatedHeight = svgWidth.value / aspectRatio.value
-      // If container has explicit height, use the minimum of calculated and container height
-      if (containerHeight.value > 0) {
-        return Math.min(calculatedHeight, containerHeight.value)
-      }
-      return calculatedHeight
+    if (!isResponsive.value && props.height) {
+        return props.height
     }
-    return containerHeight.value || svgWidth.value / aspectRatio.value
-  }
 
-  return 300 // Default height
+    if (isResponsive.value && containerWidth.value > 0) {
+        if (shouldMaintainAspectRatio.value) {
+            const calculatedHeight = svgWidth.value / aspectRatio.value
+            // If container has explicit height, use the minimum of calculated and container height
+            if (containerHeight.value > 0) {
+                return Math.min(calculatedHeight, containerHeight.value)
+            }
+            return calculatedHeight
+        }
+        return containerHeight.value || svgWidth.value / aspectRatio.value
+    }
+
+    return 300 // Default height
 })
 
 // Calculate chart area (excluding padding)
 const chartArea = computed(() => {
-  return calculateChartArea(svgWidth.value, svgHeight.value)
+    return calculateChartArea(svgWidth.value, svgHeight.value)
 })
 
 const containerStyle = computed(() => {
-  if (!isResponsive.value) {
-    return {
-      width: `${props.width}px`,
-      height: `${props.height}px`
+    if (!isResponsive.value) {
+        return {
+            width: `${props.width}px`,
+            height: `${props.height}px`
+        }
     }
-  }
-  return {
-    width: '100%',
-    height: shouldMaintainAspectRatio.value ? 'auto' : '100%'
-  }
+    return {
+        width: '100%',
+        height: shouldMaintainAspectRatio.value ? 'auto' : '100%'
+    }
 })
 
 const legendPosition = computed(() => {
-  return config.value.plugins?.legend?.position || 'top'
+    return config.value.plugins?.legend?.position || 'top'
 })
 
 const legendInteractive = computed(() => {
-  return config.value.plugins?.legend?.interactive !== false
+    return config.value.plugins?.legend?.interactive !== false
 })
 
 const handleLegendToggle = (event) => {
-  emit('legend-toggle', event)
+    emit('legend-toggle', event)
 }
 
 // Expose for parent components
 defineExpose({
-  chartArea,
-  svgWidth,
-  svgHeight,
-  normalizedDatasets,
-  isEmpty
+    chartArea,
+    svgWidth,
+    svgHeight,
+    normalizedDatasets,
+    isEmpty
 })
 </script>
 
 <style scoped>
 .chart-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
 .chart-svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  max-height: 100%;
-  opacity: 0;
-  transition: opacity 0.3s ease-in;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
 }
 
 .chart-svg-loaded {
-  opacity: 1;
+    opacity: 1;
 }
 </style>
