@@ -7,7 +7,7 @@
     aria-label="Bar Chart"
     @legend-toggle="handleLegendToggle"
   >
-    <template #default="{ chartArea, width: svgWidth, height: svgHeight }">
+    <template #default="{ chartArea }">
       <!-- Y Axis -->
       <chart-axis
         v-if="scales.y?.display !== false"
@@ -242,20 +242,5 @@ function handleLegendToggle(event) {
 .bar-interactive:active {
   transform: translateY(0);
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
-}
-
-.bars-group {
-  animation: fadeIn 0.5s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 </style>

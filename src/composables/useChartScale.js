@@ -56,7 +56,7 @@ export function useChartScale(datasets, chartArea, scaleConfig = {}) {
           y2: y
         },
         label: {
-          x: area.x - 10,
+          x: area.x - 8,
           y: y,
           text: formatNumber(value, 0),
           textAnchor: 'end',

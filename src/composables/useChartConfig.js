@@ -11,7 +11,7 @@ const DEFAULT_CONFIG = {
     top: 20,
     right: 20,
     bottom: 40,
-    left: 60
+    left: 50
   },
   animation: {
     enabled: true,
@@ -164,7 +164,7 @@ export function useChartConfig(userOptions = {}) {
       }
     }
 
-    let width = containerWidth
+    const width = containerWidth
     let height = containerHeight
 
     if (shouldMaintainAspectRatio.value && containerWidth > 0) {

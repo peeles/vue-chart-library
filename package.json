@@ -1,7 +1,7 @@
 {
   "name": "@vue-charts/core",
   "version": "1.0.0",
-  "description": "A customizable chart library for Vue 3",
+  "description": "A customisable chart library for Vue 3",
   "type": "module",
   "main": "./dist/vue-charts.umd.cjs",
   "module": "./dist/vue-charts.js",
@@ -24,12 +24,14 @@
     "test:coverage": "vitest run --coverage",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "lint": "eslint . --ext .js,.mjs,.vue --fix"
+    "lint": "eslint . --fix",
+    "lint:check": "eslint ."
   },
   "peerDependencies": {
     "vue": "^3.5.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.0",
     "@storybook/addon-links": "^10.0.2",
     "@storybook/vue3": "^10.0.2",
     "@storybook/vue3-vite": "^10.0.2",
@@ -40,6 +42,7 @@
     "autoprefixer": "^10.4.21",
     "eslint": "^9.39.0",
     "eslint-plugin-vue": "^10.5.1",
+    "globals": "^16.5.0",
     "happy-dom": "^20.0.10",
     "postcss": "^8.4.49",
     "storybook": "^10.0.2",
@@ -57,7 +60,7 @@
     "vue",
     "vue3",
     "charts",
-    "visualization",
+    "visualisation",
     "bar-chart",
     "line-chart",
     "pie-chart",

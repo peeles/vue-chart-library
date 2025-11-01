@@ -6,11 +6,11 @@
   >
     <svg
       class="chart-svg"
+      :class="{ 'chart-svg-loaded': !isLoading }"
       :viewBox="`0 0 ${svgWidth} ${svgHeight}`"
-      :width="svgWidth"
-      :height="svgHeight"
       role="img"
       :aria-label="ariaLabel"
+      preserveAspectRatio="xMidYMid meet"
     >
       <slot
         :chart-area="chartArea"
@@ -26,15 +26,22 @@
       :interactive="legendInteractive"
       @toggle="handleLegendToggle"
     />
+
+    <chart-loading-spinner
+      :visible="isLoading"
+      :message="loadingMessage"
+      :size="loadingSpinnerSize"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, toRef } from 'vue'
+import { ref, computed, toRef, watch, onMounted } from 'vue'
 import { useChartResize } from '@/composables/useChartResize.js'
 import { useChartConfig } from '@/composables/useChartConfig.js'
 import { useChartData } from '@/composables/useChartData.js'
 import ChartLegend from '@/components/shared/ChartLegend.vue'
+import ChartLoadingSpinner from '@/components/shared/ChartLoadingSpinner.vue'
 
 const props = defineProps({
   /**
@@ -71,6 +78,34 @@ const props = defineProps({
   ariaLabel: {
     type: String,
     default: 'Chart'
+  },
+  /**
+   * Show loading spinner during initial load
+   */
+  showLoading: {
+    type: Boolean,
+    default: true
+  },
+  /**
+   * Loading message text
+   */
+  loadingMessage: {
+    type: String,
+    default: ''
+  },
+  /**
+   * Loading spinner size
+   */
+  loadingSpinnerSize: {
+    type: Number,
+    default: 40
+  },
+  /**
+   * Loading delay in ms before showing spinner
+   */
+  loadingDelay: {
+    type: Number,
+    default: 100
   }
 })
 
@@ -87,7 +122,6 @@ const {
   isResponsive,
   shouldMaintainAspectRatio,
   aspectRatio,
-  padding,
   showLegend,
   calculateDimensions,
   calculateChartArea
@@ -101,6 +135,31 @@ const {
 const { width: containerWidth, height: containerHeight } = useChartResize(
   containerRef
 )
+
+// Loading state
+const isLoading = ref(props.showLoading)
+const isResizing = ref(false)
+let resizeTimeout = null
+
+// Initial mount - hide loading after first render
+onMounted(() => {
+  if (props.showLoading) {
+    setTimeout(() => {
+      isLoading.value = false
+    }, props.loadingDelay)
+  }
+})
+
+// Watch for resize events and show brief loading state
+watch([containerWidth, containerHeight], () => {
+  if (containerWidth.value > 0 && containerHeight.value > 0 && !isLoading.value) {
+    isResizing.value = true
+    clearTimeout(resizeTimeout)
+    resizeTimeout = setTimeout(() => {
+      isResizing.value = false
+    }, 150)
+  }
+})
 
 // Calculate SVG dimensions
 const svgWidth = computed(() => {
@@ -126,7 +185,12 @@ const svgHeight = computed(() => {
 
   if (isResponsive.value && containerWidth.value > 0) {
     if (shouldMaintainAspectRatio.value) {
-      return svgWidth.value / aspectRatio.value
+      const calculatedHeight = svgWidth.value / aspectRatio.value
+      // If container has explicit height, use the minimum of calculated and container height
+      if (containerHeight.value > 0) {
+        return Math.min(calculatedHeight, containerHeight.value)
+      }
+      return calculatedHeight
     }
     return containerHeight.value || svgWidth.value / aspectRatio.value
   }
@@ -179,9 +243,20 @@ defineExpose({
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 .chart-svg {
   display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+}
+
+.chart-svg-loaded {
+  opacity: 1;
 }
 </style>

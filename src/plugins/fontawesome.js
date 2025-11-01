@@ -10,7 +10,7 @@ import {
   faQuestionCircle,
   faChartBar,
   faChartLine,
-  faChartPie,
+  faChartPie
 } from '@fortawesome/free-solid-svg-icons'
 
 // Add icons to library
@@ -30,7 +30,7 @@ library.add(
  * @param {Object} app - Vue app instance
  */
 export default function installFontAwesome(app) {
-  app.component('font-awesome-icon', FontAwesomeIcon)
+  app.component('FontAwesomeIcon', FontAwesomeIcon)
 }
 
 export { FontAwesomeIcon }
