@@ -6,7 +6,9 @@ const config = {
   ],
   framework: {
     name: '@storybook/vue3-vite',
-    options: {},
+    options: {
+        docgen: true,
+    },
   }
 }
 export default config

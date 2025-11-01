@@ -3,26 +3,26 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 // Import icons as needed
 import {
-  faInfoCircle,
-  faExpand,
-  faCompress,
-  faDownload,
-  faQuestionCircle,
-  faChartBar,
-  faChartLine,
-  faChartPie
+    faChartBar,
+    faChartLine,
+    faChartPie,
+    faCompress,
+    faDownload,
+    faExpand,
+    faInfoCircle,
+    faQuestionCircle
 } from '@fortawesome/free-solid-svg-icons'
 
 // Add icons to library
 library.add(
-  faInfoCircle,
-  faExpand,
-  faCompress,
-  faDownload,
-  faQuestionCircle,
-  faChartBar,
-  faChartLine,
-  faChartPie
+    faInfoCircle,
+    faExpand,
+    faCompress,
+    faDownload,
+    faQuestionCircle,
+    faChartBar,
+    faChartLine,
+    faChartPie
 )
 
 /**
@@ -30,7 +30,7 @@ library.add(
  * @param {Object} app - Vue app instance
  */
 export default function installFontAwesome(app) {
-  app.component('FontAwesomeIcon', FontAwesomeIcon)
+    app.component('FontAwesomeIcon', FontAwesomeIcon)
 }
 
 export { FontAwesomeIcon }
