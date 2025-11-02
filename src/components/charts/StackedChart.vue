@@ -81,6 +81,7 @@ import ChartTooltip from '@/components/shared/ChartTooltip.vue'
 import { useChartConfig } from '@/composables/useChartConfig.js'
 import { useChartData } from '@/composables/useChartData.js'
 import { useChartScale } from '@/composables/useChartScale.js'
+import { useDatasetVisibility } from '@/composables/useDatasetVisibility.js'
 import { calculateBarWidth } from '@/utils/chartCalculations.js'
 
 const props = defineProps({
@@ -122,17 +123,14 @@ const dataRef = toRef(props, 'data')
 const { config, scales } = useChartConfig(optionsRef)
 const { normalisedDatasets, labels } = useChartData(dataRef, optionsRef)
 
-const disabledDatasets = ref(new Set())
+// Dataset visibility management
+const { visibleDatasets, handleLegendToggle: toggleDatasetVisibility } = useDatasetVisibility(normalisedDatasets)
+
 const tooltip = ref({
     visible: false,
     data: null,
     x: 0,
     y: 0
-})
-
-// Filter visible datasets
-const visibleDatasets = computed(() => {
-    return normalisedDatasets.value.filter((_, index) => !disabledDatasets.value.has(index))
 })
 
 // Use chart scale composable
@@ -251,11 +249,7 @@ function handleBarClick(labelIndex, datasetIndex, value) {
 }
 
 function handleLegendToggle(event) {
-    if (disabledDatasets.value.has(event.index)) {
-        disabledDatasets.value.delete(event.index)
-    } else {
-        disabledDatasets.value.add(event.index)
-    }
+    toggleDatasetVisibility(event)
     emit('legend-toggle', event)
 }
 </script>
