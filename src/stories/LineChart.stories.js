@@ -207,7 +207,12 @@ export const StraightLines = {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
         }
     }
 }
@@ -255,7 +260,12 @@ export const WithAreaFills = {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true
+                }
+            }
         }
     }
 }
@@ -300,7 +310,12 @@ export const DashedLines = {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true
+                }
+            }
         }
     }
 }
@@ -337,7 +352,12 @@ export const NoPoints = {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
         }
     }
 }
@@ -472,7 +492,12 @@ export const Interactive = {
     args: {
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
         }
     }
 }
@@ -510,6 +535,11 @@ export const StockChart = {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
             scales: {
                 x: {
                     ticks: {
@@ -593,7 +623,12 @@ export const WithLoadingSpinner = {
     args: {
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
         }
     }
 }

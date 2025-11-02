@@ -1,5 +1,5 @@
 <template>
-    <div class="area-chart-container">
+    <div class="relative flex flex-col flex-1 gap-4 w-full h-full">
         <line-chart
             :data="visibleData"
             :height="height"
@@ -10,20 +10,22 @@
             @point-click="$emit('point-click', $event)"
         />
 
-        <!-- Range Selector -->
-        <div v-if="showRangeSelector" class="range-selector-wrapper">
-            <div class="range-selector" :style="{ paddingLeft: `${chartPadding.left}px`, paddingRight: `${chartPadding.right}px` }">
-                <div class="range-overlay">
+        <div
+            v-if="showRangeSelector"
+            class="w-full bg-gray-50 rounded-lg py-2.5"
+        >
+            <div class="relative w-full h-[60px]" :style="{ paddingLeft: `${chartPadding.left}px`, paddingRight: `${chartPadding.right}px` }">
+                <div class="absolute inset-0 pointer-events-none">
                     <div
-                        class="range-window"
+                        class="absolute top-0 h-full bg-blue-500/10 border-l-2 border-r-2 border-blue-500 pointer-events-auto"
                         :style="rangeWindowStyle"
                     >
                         <div
-                            class="range-handle range-handle-start"
+                            class="range-handle absolute top-1/2 -translate-y-1/2 w-3 h-10 bg-blue-500 rounded-md cursor-ew-resize shadow-md transition-all duration-200 ease-linear hover:bg-blue-600 hover:shadow-lg -left-1.5"
                             @mousedown="startDrag('start', $event)"
                         ></div>
                         <div
-                            class="range-handle range-handle-end"
+                            class="range-handle absolute top-1/2 -translate-y-1/2 w-3 h-10 bg-blue-500 rounded-md cursor-ew-resize shadow-md transition-all duration-200 ease-linear hover:bg-blue-600 hover:shadow-lg -right-1.5"
                             @mousedown="startDrag('end', $event)"
                         ></div>
                     </div>
@@ -34,9 +36,9 @@
 </template>
 
 <script setup>
-import { computed, ref, toRef } from 'vue'
+import {computed, ref, toRef} from 'vue'
 import LineChart from './LineChart.vue'
-import { useChartConfig } from '@/composables/useChartConfig.js'
+import {useChartConfig} from '@/composables/useChartConfig.js'
 
 const props = defineProps({
     /**
@@ -146,33 +148,6 @@ const chartOptions = computed(() => {
     }
 })
 
-// Mini chart options
-const miniChartOptions = computed(() => {
-    return {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: false
-            },
-            tooltip: {
-                enabled: false
-            }
-        },
-        scales: {
-            x: {
-                display: false
-            },
-            y: {
-                display: false
-            }
-        },
-        interaction: {
-            mode: 'none'
-        }
-    }
-})
-
 // Range window styling
 const rangeWindowStyle = computed(() => {
     return {
@@ -205,11 +180,9 @@ function handleDrag(event) {
     const deltaPercent = (deltaX / rect.width) * 100
 
     if (dragType.value === 'start') {
-        const newStart = Math.max(0, Math.min(rangeEnd.value - 5, dragStartValue.value + deltaPercent))
-        rangeStart.value = newStart
+        rangeStart.value = Math.max(0, Math.min(rangeEnd.value - 5, dragStartValue.value + deltaPercent))
     } else if (dragType.value === 'end') {
-        const newEnd = Math.min(100, Math.max(rangeStart.value + 5, dragStartValue.value + deltaPercent))
-        rangeEnd.value = newEnd
+        rangeEnd.value = Math.min(100, Math.max(rangeStart.value + 5, dragStartValue.value + deltaPercent))
     }
 
     emit('range-change', {
@@ -229,79 +202,8 @@ function stopDrag() {
 }
 </script>
 
-<style scoped>
-.area-chart-container {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
-    height: 100%;
-}
-
-.range-selector-wrapper {
-    width: 100%;
-    background: #f9fafb;
-    border-radius: 8px;
-    padding: 10px 0;
-}
-
-.range-selector {
-    position: relative;
-    width: 100%;
-    height: 60px;
-}
-
-.mini-chart {
-    width: 100%;
-    height: 60px;
-    opacity: 0.6;
-}
-
-.range-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-}
-
-.range-window {
-    position: absolute;
-    top: 0;
-    height: 100%;
-    background: rgba(59, 130, 246, 0.1);
-    border-left: 2px solid #3b82f6;
-    border-right: 2px solid #3b82f6;
-    pointer-events: all;
-}
-
-.range-handle {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 12px;
-    height: 40px;
-    background: #3b82f6;
-    border-radius: 6px;
-    cursor: ew-resize;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transition: background 0.2s ease;
-}
-
-.range-handle:hover {
-    background: #2563eb;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.range-handle-start {
-    left: -6px;
-}
-
-.range-handle-end {
-    right: -6px;
-}
-
+<style>
+/* Pseudo-elements for range handle grip indicators */
 .range-handle::before {
     content: '';
     position: absolute;
@@ -325,10 +227,5 @@ function stopDrag() {
     background: white;
     border-radius: 1px;
     margin-left: 4px;
-}
-
-.range-handle-start::after,
-.range-handle-end::after {
-    margin-left: -4px;
 }
 </style>

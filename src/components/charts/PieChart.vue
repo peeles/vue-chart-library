@@ -20,7 +20,7 @@
                         <path
                             :aria-label="`${slice.label}: ${slice.value} (${slice.percentage.toFixed(1)}%)`"
                             :class="{
-                                'pie-slice-interactive': isInteractive,
+                                'cursor-pointer pie-slice-interactive-hover': isInteractive,
                                 'pie-slice-hovered': hoveredIndex === index
                             }"
                             :d="slice.path"
@@ -28,7 +28,7 @@
                             :stroke="slice.borderColor"
                             :stroke-width="borderWidth"
                             :transform="getSliceTransform(slice)"
-                            class="pie-slice"
+                            class="pie-slice transition-all duration-300 ease-linear cursor-default"
                             role="graphics-symbol"
                             @click="handleSliceClick(index, slice)"
                             @mouseenter="handleSliceHover(index, slice, $event)"
@@ -47,7 +47,7 @@
                                 :font-size="labelFontSize"
                                 :x="slice.labelX"
                                 :y="slice.labelY"
-                                class="pie-label"
+                                class="pie-label pointer-events-none select-none"
                                 dominant-baseline="middle"
                                 font-weight="600"
                                 text-anchor="middle"
@@ -68,7 +68,7 @@
                                 :x2="slice.lineEndX"
                                 :y1="slice.lineStartY"
                                 :y2="slice.lineEndY"
-                                class="pie-label-line"
+                                class="pie-label-line pointer-events-none"
                                 stroke-width="2"
                             />
                             <!-- Label Text -->
@@ -78,7 +78,7 @@
                                 :text-anchor="slice.labelAlign"
                                 :x="slice.labelX"
                                 :y="slice.labelY"
-                                class="pie-label"
+                                class="pie-label pointer-events-none select-none"
                                 dominant-baseline="middle"
                                 font-weight="500"
                             >
@@ -93,7 +93,7 @@
                     <text
                         :fill="centerLabelColor"
                         :font-size="centerLabelFontSize"
-                        class="center-label-title"
+                        class="center-label-title pointer-events-none select-none"
                         dominant-baseline="middle"
                         font-weight="700"
                         text-anchor="middle"
@@ -105,7 +105,7 @@
                     <text
                         :fill="centerLabelColor"
                         :font-size="centerLabelSubFontSize"
-                        class="center-label-subtitle"
+                        class="center-label-subtitle pointer-events-none select-none"
                         dominant-baseline="middle"
                         font-weight="400"
                         text-anchor="middle"
@@ -173,7 +173,7 @@ const optionsRef = toRef(props, 'options')
 const dataRef = toRef(props, 'data')
 
 const { config } = useChartConfig(optionsRef)
-const { normalizedDatasets, labels } = useChartData(dataRef, optionsRef)
+const { normalisedDatasets, labels } = useChartData(dataRef, optionsRef)
 
 const disabledDatasets = ref(new Set())
 const hoveredIndex = ref(null)
@@ -209,7 +209,7 @@ const isInteractive = computed(() => {
 })
 
 // Get first dataset (pie charts typically use one dataset)
-const dataset = computed(() => normalizedDatasets.value[0] || { data: [] })
+const dataset = computed(() => normalisedDatasets.value[0] || { data: [] })
 
 // Filter visible data points
 const visibleData = computed(() => {
@@ -388,10 +388,9 @@ function handleLegendToggle(event) {
 }
 </script>
 
-<style scoped>
+<style>
+/* SVG-specific animations and transforms that can't be replicated with Tailwind */
 .pie-slice {
-    transition: all 0.3s ease;
-    cursor: default;
     animation: sliceGrow 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
     transform-origin: center;
 }
@@ -407,33 +406,14 @@ function handleLegendToggle(event) {
     }
 }
 
-.pie-slice-interactive {
-    cursor: pointer;
-}
-
-.pie-slice-interactive:hover,
+.pie-slice-interactive-hover:hover,
 .pie-slice-hovered {
     opacity: 0.9;
     filter: brightness(1.1) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
     transform: scale(1.02);
 }
 
-.pie-slice-interactive:active {
+.pie-slice-interactive-hover:active {
     transform: scale(0.98);
-}
-
-.pie-label {
-    pointer-events: none;
-    user-select: none;
-}
-
-.pie-label-line {
-    pointer-events: none;
-}
-
-.center-label-title,
-.center-label-subtitle {
-    pointer-events: none;
-    user-select: none;
 }
 </style>

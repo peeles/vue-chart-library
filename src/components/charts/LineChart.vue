@@ -1,4 +1,4 @@
-    <template>
+<template>
     <base-chart
         :data="data"
         :height="height"
@@ -45,17 +45,17 @@
                         :d="getAreaPath(dataset, datasetIndex, chartArea)"
                         :fill="dataset.backgroundColor || dataset.borderColor"
                         :opacity="dataset.fillOpacity || 0.2"
-                        class="line-area"
+                        class="line-area transition-opacity duration-200 ease-linear"
                     />
 
                     <!-- Line Path -->
                     <path
-                        :class="{ 'line-path-interactive': isInteractive }"
+                        :class="{ 'cursor-pointer': isInteractive, 'line-path-interactive-hover': isInteractive }"
                         :d="getLinePath(dataset, datasetIndex, chartArea)"
                         :stroke="dataset.borderColor"
                         :stroke-dasharray="dataset.borderDash?.join(',') || ''"
                         :stroke-width="dataset.borderWidth || 2"
-                        class="line-path"
+                        class="line-path transition-all duration-200 ease-linear"
                         fill="none"
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -70,14 +70,14 @@
                             v-for="(point, pointIndex) in getDataPoints(dataset, datasetIndex, chartArea)"
                             :key="pointIndex"
                             :aria-label="`${data.labels[pointIndex]}: ${point.value}`"
-                            :class="{ 'data-point-interactive': isInteractive }"
+                            :class="{ 'cursor-pointer data-point-interactive-hover': isInteractive }"
                             :cx="point.x"
                             :cy="point.y"
                             :fill="dataset.pointBackgroundColor || dataset.backgroundColor || dataset.borderColor"
                             :r="getPointRadius(dataset)"
                             :stroke="dataset.pointBorderColor || dataset.borderColor"
                             :stroke-width="dataset.pointBorderWidth || 2"
-                            class="data-point"
+                            class="data-point transition-all duration-200 ease-linear"
                             role="graphics-symbol"
                             @click="handlePointClick(pointIndex, datasetIndex, point.value)"
                             @mouseenter="handlePointHover(pointIndex, datasetIndex, point.value, $event)"
@@ -146,7 +146,7 @@ const optionsRef = toRef(props, 'options')
 const dataRef = toRef(props, 'data')
 
 const { config, scales } = useChartConfig(optionsRef)
-const { normalizedDatasets, labels } = useChartData(dataRef, optionsRef)
+const { normalisedDatasets, labels } = useChartData(dataRef, optionsRef)
 
 const disabledDatasets = ref(new Set())
 const tooltip = ref({
@@ -158,7 +158,7 @@ const tooltip = ref({
 
 // Filter visible datasets
 const visibleDatasets = computed(() => {
-    return normalizedDatasets.value.filter((_, index) => !disabledDatasets.value.has(index))
+    return normalisedDatasets.value.filter((_, index) => !disabledDatasets.value.has(index))
 })
 
 // Use chart scale composable
@@ -322,9 +322,9 @@ function handleLegendToggle(event) {
 }
 </script>
 
-<style scoped>
+<style>
+/* SVG-specific animations that can't be replicated with Tailwind */
 .line-path {
-    transition: stroke-width 0.2s ease, opacity 0.2s ease;
     stroke-dasharray: 3000;
     stroke-dashoffset: 3000;
     animation: lineDraw 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
@@ -336,17 +336,12 @@ function handleLegendToggle(event) {
     }
 }
 
-.line-path-interactive {
-    cursor: pointer;
-}
-
-.line-path-interactive:hover {
+.line-path-interactive-hover:hover {
     stroke-width: 3;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .line-area {
-    transition: opacity 0.2s ease;
     animation: areaFadeIn 0.8s ease-out 0.4s backwards;
 }
 
@@ -360,7 +355,6 @@ function handleLegendToggle(event) {
 }
 
 .data-point {
-    transition: all 0.2s ease;
     animation: pointFadeIn 0.6s ease-out backwards;
 }
 
@@ -373,16 +367,12 @@ function handleLegendToggle(event) {
     }
 }
 
-.data-point-interactive {
-    cursor: pointer;
-}
-
-.data-point-interactive:hover {
+.data-point-interactive-hover:hover {
     r: 6;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
-.data-point-interactive:active {
+.data-point-interactive-hover:active {
     r: 5;
 }
 </style>

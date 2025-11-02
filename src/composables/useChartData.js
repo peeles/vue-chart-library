@@ -17,9 +17,9 @@ export function useChartData(data, options = {}) {
     })
 
     /**
-   * Get normalized datasets with colors
+   * Get normalised datasets with colors
    */
-    const normalizedDatasets = computed(() => {
+    const normalisedDatasets = computed(() => {
         if (!data.value || !data.value.datasets) {
             return []
         }
@@ -85,7 +85,7 @@ export function useChartData(data, options = {}) {
 
     return {
         isValid,
-        normalizedDatasets,
+        normalisedDatasets,
         allValues,
         isNumeric,
         datasetCount,

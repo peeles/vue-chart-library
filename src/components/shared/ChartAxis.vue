@@ -52,7 +52,7 @@
                 :text-anchor="tick.label.textAnchor"
                 :x="tick.label.x"
                 :y="tick.label.y"
-                class="axis-label"
+                class="select-none"
                 font-size="12"
             >
                 {{ tick.label.text }}
@@ -151,10 +151,3 @@ const axisLine = computed(() => {
     }
 })
 </script>
-
-<style scoped>
-.axis-label {
-    font-family: var(--chart-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif), serif;
-    user-select: none;
-}
-</style>

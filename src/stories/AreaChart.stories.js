@@ -103,8 +103,7 @@ export const Default = {
             },
             plugins: {
                 legend: {
-                    display: true,
-                    position: 'top'
+                    display: false,
                 }
             }
         },
@@ -144,6 +143,11 @@ export const WithoutRangeSelector = {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
             scales: {
                 x: {
                     flush: true

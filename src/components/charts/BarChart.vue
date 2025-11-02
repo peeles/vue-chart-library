@@ -49,8 +49,8 @@
                         :fill="dataset.backgroundColor"
                         :stroke="dataset.borderColor"
                         :stroke-width="dataset.borderWidth"
-                        class="bar"
-                        :class="{ 'bar-interactive': isInteractive }"
+                        class="bar transition-all duration-300"
+                        :class="{ 'cursor-pointer bar-interactive-hover': isInteractive }"
                         @mouseenter="handleBarHover(index, datasetIndex, $event)"
                         @mouseleave="handleBarLeave"
                         @click="handleBarClick(index, datasetIndex, value)"
@@ -120,7 +120,7 @@ const optionsRef = toRef(props, 'options')
 const dataRef = toRef(props, 'data')
 
 const { config, scales } = useChartConfig(optionsRef)
-const { normalizedDatasets, labels } = useChartData(dataRef, optionsRef)
+const { normalisedDatasets, labels } = useChartData(dataRef, optionsRef)
 
 const disabledDatasets = ref(new Set())
 const tooltip = ref({
@@ -132,7 +132,7 @@ const tooltip = ref({
 
 // Filter visible datasets
 const visibleDatasets = computed(() => {
-    return normalizedDatasets.value.filter((_, index) => !disabledDatasets.value.has(index))
+    return normalisedDatasets.value.filter((_, index) => !disabledDatasets.value.has(index))
 })
 
 // Use chart scale composable
@@ -223,9 +223,9 @@ function handleLegendToggle(event) {
 }
 </script>
 
-<style scoped>
+<style>
+/* SVG-specific animations and transforms that can't be replicated with Tailwind */
 .bar {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
     animation: barGrowth 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
     transform-origin: bottom;
@@ -242,17 +242,13 @@ function handleLegendToggle(event) {
     }
 }
 
-.bar-interactive {
-    cursor: pointer;
-}
-
-.bar-interactive:hover {
+.bar-interactive-hover:hover {
     opacity: 0.85;
     filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15));
     transform: translateY(-2px) scaleY(1);
 }
 
-.bar-interactive:active {
+.bar-interactive-hover:active {
     transform: translateY(0) scaleY(1);
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }

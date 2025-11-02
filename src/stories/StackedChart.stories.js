@@ -228,7 +228,12 @@ export const TeamPerformance = {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true
+                }
+            }
         }
     }
 }
@@ -271,6 +276,11 @@ export const NoGridLines = {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true
+                }
+            },
             scales: {
                 x: {
                     grid: {
@@ -382,7 +392,12 @@ export const Interactive = {
     args: {
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true
+                }
+            }
         }
     }
 }
@@ -440,7 +455,12 @@ export const ManyCategories = {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true
+                }
+            }
         }
     }
 }
@@ -527,7 +547,12 @@ export const WithLoadingSpinner = {
     args: {
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true
+                }
+            }
         }
     }
 }

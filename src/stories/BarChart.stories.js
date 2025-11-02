@@ -256,6 +256,11 @@ export const NoGridLines = {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
             scales: {
                 x: {
                     grid: {
@@ -445,7 +450,12 @@ export const SmallData = {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
         }
     }
 }
@@ -484,6 +494,11 @@ export const LargeDataset = {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
             scales: {
                 x: {
                     ticks: {
@@ -528,6 +543,11 @@ export const EmptyState = {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
             scales: {
                 y: {
                     beginAtZero: true
@@ -570,6 +590,11 @@ export const NegativeValues = {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
             scales: {
                 y: {
                     beginAtZero: false // Allow negative values
@@ -696,7 +721,12 @@ export const WithLoadingSpinner = {
     args: {
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
         }
     }
 }

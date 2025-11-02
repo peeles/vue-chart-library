@@ -43,7 +43,7 @@
                         v-for="(bar, datasetIndex) in labelGroup"
                         :key="datasetIndex"
                         :aria-label="`${data.labels[labelIndex]}: ${bar.dataset.label} - ${bar.value}`"
-                        :class="{ 'stacked-bar-interactive': isInteractive }"
+                        :class="{ 'cursor-pointer stacked-bar-interactive-hover': isInteractive }"
                         :fill="bar.color"
                         :height="bar.height"
                         :stroke="bar.borderColor"
@@ -51,7 +51,7 @@
                         :width="bar.width"
                         :x="bar.x"
                         :y="bar.y"
-                        class="stacked-bar"
+                        class="stacked-bar transition-opacity duration-200 ease-linear"
                         role="graphics-symbol"
                         @click="handleBarClick(labelIndex, datasetIndex, bar.value)"
                         @mouseenter="handleBarHover(labelIndex, datasetIndex, bar.value, $event)"
@@ -120,7 +120,7 @@ const optionsRef = toRef(props, 'options')
 const dataRef = toRef(props, 'data')
 
 const { config, scales } = useChartConfig(optionsRef)
-const { normalizedDatasets, labels } = useChartData(dataRef, optionsRef)
+const { normalisedDatasets, labels } = useChartData(dataRef, optionsRef)
 
 const disabledDatasets = ref(new Set())
 const tooltip = ref({
@@ -132,7 +132,7 @@ const tooltip = ref({
 
 // Filter visible datasets
 const visibleDatasets = computed(() => {
-    return normalizedDatasets.value.filter((_, index) => !disabledDatasets.value.has(index))
+    return normalisedDatasets.value.filter((_, index) => !disabledDatasets.value.has(index))
 })
 
 // Use chart scale composable
@@ -260,9 +260,9 @@ function handleLegendToggle(event) {
 }
 </script>
 
-<style scoped>
+<style>
+/* SVG-specific animations and transforms that can't be replicated with Tailwind */
 .stacked-bar {
-    transition: opacity 0.2s ease;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.05));
     animation: barGrowth 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
     transform-origin: bottom;
@@ -279,16 +279,12 @@ function handleLegendToggle(event) {
     }
 }
 
-.stacked-bar-interactive {
-    cursor: pointer;
-}
-
-.stacked-bar-interactive:hover {
+.stacked-bar-interactive-hover:hover {
     opacity: 0.85;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
-.stacked-bar-interactive:active {
+.stacked-bar-interactive-hover:active {
     opacity: 1;
 }
 </style>
