@@ -864,3 +864,156 @@ Illustrates loading states with a spinner, placeholder messaging, and manual rel
         })
     }
 }
+
+export const InvalidDataMissingLabels = {
+    render: (args) => ({
+        components: { BarChart },
+        setup() {
+            return { args }
+        },
+        template: '<div style="width: 100%; height: 400px;"><bar-chart v-bind="args" /></div>'
+    }),
+    args: {
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Sales',
+                data: [12, 19, 3, 5, 2, 8],
+                backgroundColor: '#3b82f6'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `## Invalid Data - Missing Labels
+
+Demonstrates error handling when labels array is empty but data exists.`
+            }
+        }
+    }
+}
+
+export const InvalidDataMismatchedLength = {
+    render: (args) => ({
+        components: { BarChart },
+        setup() {
+            return { args }
+        },
+        template: '<div style="width: 100%; height: 400px;"><bar-chart v-bind="args" /></div>'
+    }),
+    args: {
+        data: {
+            labels: ['Jan', 'Feb', 'Mar'],
+            datasets: [{
+                label: 'Sales',
+                data: [12, 19, 3, 5, 2, 8],
+                backgroundColor: '#3b82f6'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `## Invalid Data - Mismatched Length
+
+Demonstrates error handling when dataset length doesn't match labels length.`
+            }
+        }
+    }
+}
+
+export const InvalidDataNoDatasets = {
+    render: (args) => ({
+        components: { BarChart },
+        setup() {
+            return { args }
+        },
+        template: '<div style="width: 100%; height: 400px;"><bar-chart v-bind="args" /></div>'
+    }),
+    args: {
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: []
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `## Invalid Data - No Datasets
+
+Demonstrates empty state when datasets array is empty.`
+            }
+        }
+    }
+}
+
+export const TrulyEmptyData = {
+    render: (args) => ({
+        components: { BarChart },
+        setup() {
+            return { args }
+        },
+        template: '<div style="width: 100%; height: 400px;"><bar-chart v-bind="args" /></div>'
+    }),
+    args: {
+        data: {
+            labels: [],
+            datasets: []
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `## Truly Empty Data
+
+Demonstrates empty state when both labels and datasets are empty.`
+            }
+        }
+    }
+}
+
+export const InvalidDataNull = {
+    render: (args) => ({
+        components: { BarChart },
+        setup() {
+            return { args }
+        },
+        template: '<div style="width: 100%; height: 400px;"><bar-chart v-bind="args" /></div>'
+    }),
+    args: {
+        data: {
+            labels: ['Jan', 'Feb', 'Mar'],
+            datasets: null
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `## Invalid Data - Null Dataset
+
+Demonstrates error handling when datasets is null instead of an array.`
+            }
+        }
+    }
+}

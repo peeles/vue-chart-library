@@ -8,6 +8,47 @@
         @legend-toggle="handleLegendToggle"
     >
         <template #default="{ chartArea }">
+            <!-- Empty State -->
+            <g v-if="isEmpty">
+                <text
+                    :x="chartArea.x + chartArea.width / 2"
+                    :y="chartArea.y + chartArea.height / 2"
+                    text-anchor="middle"
+                    dominant-baseline="middle"
+                    class="text-gray-500"
+                    font-size="14"
+                >
+                    No data to display
+                </text>
+            </g>
+
+            <!-- Invalid Data State -->
+            <g v-else-if="!isValid">
+                <text
+                    :x="chartArea.x + chartArea.width / 2"
+                    :y="chartArea.y + chartArea.height / 2 - 10"
+                    text-anchor="middle"
+                    dominant-baseline="middle"
+                    class="text-red-500"
+                    font-size="14"
+                    font-weight="600"
+                >
+                    Invalid chart data
+                </text>
+                <text
+                    :x="chartArea.x + chartArea.width / 2"
+                    :y="chartArea.y + chartArea.height / 2 + 15"
+                    text-anchor="middle"
+                    dominant-baseline="middle"
+                    class="text-gray-500"
+                    font-size="12"
+                >
+                    Please check that data and labels are properly formatted
+                </text>
+            </g>
+
+            <!-- Chart Content -->
+            <g v-else>
             <!-- Y Axis -->
             <chart-axis
                 v-if="scales.y?.display !== false"
@@ -60,6 +101,7 @@
                         <title>{{ data.labels[labelIndex] }}: {{ bar.dataset.label }} - {{ bar.value }}</title>
                     </rect>
                 </g>
+            </g>
             </g>
 
             <!-- Tooltip -->
@@ -121,7 +163,7 @@ const optionsRef = toRef(props, 'options')
 const dataRef = toRef(props, 'data')
 
 const { config, scales } = useChartConfig(optionsRef)
-const { normalisedDatasets, labels } = useChartData(dataRef, optionsRef)
+const { normalisedDatasets, labels, isValid, isEmpty } = useChartData(dataRef, optionsRef)
 
 // Dataset visibility management
 const { visibleDatasets, handleLegendToggle: toggleDatasetVisibility } = useDatasetVisibility(normalisedDatasets)
