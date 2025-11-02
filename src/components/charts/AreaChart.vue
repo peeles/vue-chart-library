@@ -43,7 +43,7 @@
 </template>
 
 <script setup>
-import {computed, ref, toRef} from 'vue'
+import {computed, onUnmounted, ref, toRef} from 'vue'
 import LineChart from './LineChart.vue'
 import {useChartConfig} from '@/composables/useChartConfig.js'
 
@@ -197,6 +197,12 @@ function stopDrag() {
     document.removeEventListener('mousemove', handleDrag)
     document.removeEventListener('mouseup', stopDrag)
 }
+
+onUnmounted(() => {
+    stopDrag()
+    document.removeEventListener('mousemove', handleDrag)
+    document.removeEventListener('mouseup', stopDrag)
+})
 </script>
 
 <style>
