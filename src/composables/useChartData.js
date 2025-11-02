@@ -24,9 +24,11 @@ export function useChartData(data, options = {}) {
             return []
         }
 
-        return data.value.datasets.map((dataset, index) => {
-            const colors = generateColorPalette(1, options.value?.colors)
+        // Generate color palette once for all datasets
+        const datasetCount = data.value.datasets.length
+        const colors = generateColorPalette(datasetCount, options.value?.colors)
 
+        return data.value.datasets.map((dataset, index) => {
             return {
                 ...dataset,
                 backgroundColor: dataset.backgroundColor || colors[index % colors.length],
