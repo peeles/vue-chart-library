@@ -2,6 +2,8 @@ import { computed } from 'vue'
 
 /**
  * Default chart configuration
+ * @type {import('../types.js').ChartOptions}
+ * @constant
  */
 const DEFAULT_CONFIG = {
     responsive: true,
@@ -56,10 +58,12 @@ const DEFAULT_CONFIG = {
 }
 
 /**
- * Deeply merge two objects
- * @param {Object} target - Target object
- * @param {Object} source - Source object
- * @returns {Object} - Merged object
+ * Deeply merge two objects (internal utility)
+ * @private
+ * @template T
+ * @param {T} target - Target object
+ * @param {Partial<T>} source - Source object to merge into target
+ * @returns {T} Merged object
  */
 function deepMerge(target, source) {
     const result = { ...target }
@@ -77,8 +81,25 @@ function deepMerge(target, source) {
 
 /**
  * Composable for managing chart configuration
- * @param {Object} userOptions - User-provided options
- * @returns {Object} - Merged configuration and utilities
+ * Merges user options with defaults and provides computed config accessors
+ * @param {import('vue').Ref<import('../types.js').ChartOptions>} [userOptions={}] - User-provided options ref
+ * @returns {{
+ *   config: import('vue').ComputedRef<import('../types.js').ChartOptions>,
+ *   isResponsive: import('vue').ComputedRef<boolean>,
+ *   shouldMaintainAspectRatio: import('vue').ComputedRef<boolean>,
+ *   aspectRatio: import('vue').ComputedRef<number>,
+ *   padding: import('vue').ComputedRef<{top: number, right: number, bottom: number, left: number}>,
+ *   animation: import('vue').ComputedRef<{enabled: boolean, duration: number}>,
+ *   scales: import('vue').ComputedRef<import('../types.js').ScalesConfig>,
+ *   plugins: import('vue').ComputedRef<import('../types.js').PluginConfig>,
+ *   showLegend: import('vue').ComputedRef<boolean>,
+ *   showTooltip: import('vue').ComputedRef<boolean>,
+ *   calculateDimensions: (containerWidth: number, containerHeight: number) => import('../types.js').Dimensions,
+ *   calculateChartArea: (totalWidth: number, totalHeight: number) => import('../types.js').ChartArea
+ * }} Object with config and utility functions
+ * @example
+ * const options = ref({ responsive: true, scales: { y: { beginAtZero: true } } })
+ * const { config, scales, calculateChartArea } = useChartConfig(options)
  */
 export function useChartConfig(userOptions = {}) {
     /**
@@ -153,9 +174,10 @@ export function useChartConfig(userOptions = {}) {
 
     /**
      * Calculate chart dimensions based on container and config
-     * @param {number} containerWidth - Container width
-     * @param {number} containerHeight - Container height
-     * @returns {Object} - {width, height}
+     * Handles responsive sizing and aspect ratio maintenance
+     * @param {number} containerWidth - Container width in pixels
+     * @param {number} containerHeight - Container height in pixels
+     * @returns {import('../types.js').Dimensions} Calculated width and height
      */
     const calculateDimensions = (containerWidth, containerHeight) => {
         if (!isResponsive.value) {
@@ -176,10 +198,10 @@ export function useChartConfig(userOptions = {}) {
     }
 
     /**
-     * Calculate chart area (excluding padding)
-     * @param {number} totalWidth - Total chart width
-     * @param {number} totalHeight - Total chart height
-     * @returns {Object} - {x, y, width, height}
+     * Calculate chart area dimensions (excluding padding)
+     * @param {number} totalWidth - Total chart width in pixels
+     * @param {number} totalHeight - Total chart height in pixels
+     * @returns {import('../types.js').ChartArea} Chart area with x, y, width, height
      */
     const calculateChartArea = (totalWidth, totalHeight) => {
         const p = padding.value

@@ -115,6 +115,11 @@
     </base-chart>
 </template>
 
+/**
+ * @fileoverview BarChart component - Vertical bar chart with customizable axes
+ * @module components/charts/BarChart
+ */
+
 <script setup>
 import { computed, ref, toRef } from 'vue'
 import BaseChart from './BaseChart.vue'
@@ -126,36 +131,56 @@ import { useChartScale } from '@/composables/useChartScale.js'
 import { useDatasetVisibility } from '@/composables/useDatasetVisibility.js'
 import { useBarDimensions } from '@/composables/useBarDimensions.js'
 
+/**
+ * Component props
+ * @typedef {Object} BarChartProps
+ * @property {import('../../types.js').ChartData} data - Chart data with labels and datasets
+ * @property {import('../../types.js').ChartOptions} [options] - Chart configuration options
+ * @property {number|null} [width] - Fixed chart width (if not responsive)
+ * @property {number|null} [height] - Fixed chart height (if not responsive)
+ */
+
 const props = defineProps({
     /**
-     * Chart data
+     * Chart data containing labels and datasets
+     * @type {import('../../types.js').ChartData}
      */
     data: {
         type: Object,
         required: true
     },
     /**
-     * Chart options
+     * Chart configuration options
+     * @type {import('../../types.js').ChartOptions}
      */
     options: {
         type: Object,
         default: () => ({})
     },
     /**
-     * Chart width
+     * Fixed chart width in pixels (overrides responsive)
+     * @type {number|null}
      */
     width: {
         type: Number,
         default: null
     },
     /**
-     * Chart height
+     * Fixed chart height in pixels (overrides responsive)
+     * @type {number|null}
      */
     height: {
         type: Number,
         default: null
     }
 })
+
+/**
+ * Component events
+ * @typedef {Object} BarChartEmits
+ * @property {(event: import('../../types.js').BarClickEvent) => void} bar-click - Emitted when a bar is clicked
+ * @property {(event: import('../../types.js').LegendToggleEvent) => void} legend-toggle - Emitted when legend item is toggled
+ */
 
 const emit = defineEmits(['bar-click', 'legend-toggle'])
 

@@ -3,10 +3,20 @@ import { calculateNiceScale, calculateStackedValues, formatNumber, getDataRange 
 
 /**
  * Composable for calculating chart scales and tick positions
- * @param {Object} datasets - Chart datasets
- * @param {Object} chartArea - Chart area dimensions (can be a ref or computed with stacked property)
- * @param {Object} scaleConfig - Scale configuration
- * @returns {Object} - Scale utilities and tick generators
+ * Handles both regular and stacked chart scaling with automatic nice scale calculation
+ * @param {import('vue').ComputedRef<import('../types.js').Dataset[]>} datasets - Chart datasets ref
+ * @param {import('vue').ComputedRef<{stacked?: boolean}>} chartArea - Chart area dimensions with optional stacked flag
+ * @param {import('vue').ComputedRef<import('../types.js').ScalesConfig>} [scaleConfig={}] - Scale configuration ref
+ * @returns {{
+ *   dataRange: import('vue').ComputedRef<import('../types.js').DataRange>,
+ *   yScale: import('vue').ComputedRef<import('../types.js').NiceScale>,
+ *   generateYAxisTicks: (area: import('../types.js').ChartArea) => Array<{value: number, gridLine: object, tickMark: object, label: object}>,
+ *   generateXAxisTicks: (area: import('../types.js').ChartArea, labels: string[], options?: {flush?: boolean}) => Array<{value: string, gridLine: object, tickMark: object, label: object}>,
+ *   valueToY: (value: number, area: import('../types.js').ChartArea) => number,
+ *   valueToHeight: (value: number, area: import('../types.js').ChartArea) => number
+ * }} Object with scale calculations and tick generators
+ * @example
+ * const { yScale, generateYAxisTicks, valueToY } = useChartScale(datasets, chartArea, scales)
  */
 export function useChartScale(datasets, chartArea, scaleConfig = {}) {
     /**
@@ -48,7 +58,9 @@ export function useChartScale(datasets, chartArea, scaleConfig = {}) {
     })
 
     /**
-     * Generate Y axis ticks with positions
+     * Generate Y axis ticks with positions for rendering
+     * @param {import('../types.js').ChartArea} area - Chart area dimensions
+     * @returns {Array<{value: number, gridLine: object, tickMark: object, label: object}>} Array of tick objects
      */
     const generateYAxisTicks = (area) => {
         const { min, max, step } = yScale.value
@@ -86,7 +98,11 @@ export function useChartScale(datasets, chartArea, scaleConfig = {}) {
     }
 
     /**
-     * Generate X axis ticks with positions
+     * Generate X axis ticks with positions for rendering
+     * @param {import('../types.js').ChartArea} area - Chart area dimensions
+     * @param {string[]} labels - Axis labels
+     * @param {{flush?: boolean}} [options={}] - Options for tick positioning
+     * @returns {Array<{value: string, gridLine: object, tickMark: object, label: object}>} Array of tick objects
      */
     const generateXAxisTicks = (area, labels, options = {}) => {
         const ticks = []
@@ -148,7 +164,10 @@ export function useChartScale(datasets, chartArea, scaleConfig = {}) {
     }
 
     /**
-     * Convert value to Y coordinate
+     * Convert data value to Y coordinate on chart
+     * @param {number} value - Data value
+     * @param {import('../types.js').ChartArea} area - Chart area dimensions
+     * @returns {number} Y coordinate in pixels
      */
     const valueToY = (value, area) => {
         const { min, max } = yScale.value
@@ -157,7 +176,10 @@ export function useChartScale(datasets, chartArea, scaleConfig = {}) {
     }
 
     /**
-     * Calculate bar height
+     * Convert data value to bar height in pixels
+     * @param {number} value - Data value
+     * @param {import('../types.js').ChartArea} area - Chart area dimensions
+     * @returns {number} Height in pixels
      */
     const valueToHeight = (value, area) => {
         const { min, max } = yScale.value

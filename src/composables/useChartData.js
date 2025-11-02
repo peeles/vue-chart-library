@@ -4,21 +4,37 @@ import { generateColorPalette } from '@/utils/colourUtils.js'
 
 /**
  * Composable for normalizing and processing chart data
- * @param {Object} data - Chart data
- * @param {Object} options - Chart options
- * @returns {Object} - Normalized data and utilities
+ * Validates data, applies default colors, and provides utility computed properties
+ * @param {import('vue').Ref<import('../types.js').ChartData>} data - Reactive chart data ref
+ * @param {import('vue').Ref<import('../types.js').ChartOptions>} [options={}] - Reactive chart options ref
+ * @returns {{
+ *   isValid: import('vue').ComputedRef<boolean>,
+ *   normalisedDatasets: import('vue').ComputedRef<import('../types.js').Dataset[]>,
+ *   allValues: import('vue').ComputedRef<number[]>,
+ *   isNumeric: import('vue').ComputedRef<boolean>,
+ *   datasetCount: import('vue').ComputedRef<number>,
+ *   dataPointCount: import('vue').ComputedRef<number>,
+ *   labels: import('vue').ComputedRef<string[]>,
+ *   isEmpty: import('vue').ComputedRef<boolean>
+ * }} Object containing computed properties for chart data processing
+ * @example
+ * const dataRef = ref({ labels: ['A', 'B'], datasets: [{ data: [1, 2] }] })
+ * const { isValid, normalisedDatasets, isEmpty } = useChartData(dataRef)
  */
 export function useChartData(data, options = {}) {
     /**
-   * Validate the chart data
-   */
+     * Validate the chart data structure
+     * @type {import('vue').ComputedRef<boolean>}
+     */
     const isValid = computed(() => {
         return validateChartData(data.value)
     })
 
     /**
-   * Get normalised datasets with colors
-   */
+     * Get normalized datasets with default colors applied
+     * Ensures all datasets have backgroundColor, borderColor, borderWidth, and label
+     * @type {import('vue').ComputedRef<import('../types.js').Dataset[]>}
+     */
     const normalisedDatasets = computed(() => {
         if (!data.value || !data.value.datasets) {
             return []
@@ -40,8 +56,9 @@ export function useChartData(data, options = {}) {
     })
 
     /**
-   * Get all data values as flat array
-   */
+     * Get all data values from all datasets as a flat array
+     * @type {import('vue').ComputedRef<number[]>}
+     */
     const allValues = computed(() => {
         if (!data.value || !data.value.datasets) {
             return []
@@ -51,36 +68,41 @@ export function useChartData(data, options = {}) {
     })
 
     /**
-   * Check if all data is numeric
-   */
+     * Check if all data values are valid numbers
+     * @type {import('vue').ComputedRef<boolean>}
+     */
     const isNumeric = computed(() => {
         return validateNumericData(allValues.value)
     })
 
     /**
-   * Get dataset count
-   */
+     * Get total number of datasets
+     * @type {import('vue').ComputedRef<number>}
+     */
     const datasetCount = computed(() => {
         return data.value?.datasets?.length || 0
     })
 
     /**
-   * Get data point count (labels count)
-   */
+     * Get number of data points (equal to number of labels)
+     * @type {import('vue').ComputedRef<number>}
+     */
     const dataPointCount = computed(() => {
         return data.value?.labels?.length || 0
     })
 
     /**
-   * Get labels
-   */
+     * Get chart labels array
+     * @type {import('vue').ComputedRef<string[]>}
+     */
     const labels = computed(() => {
         return data.value?.labels || []
     })
 
     /**
-   * Check if data is empty
-   */
+     * Check if chart has no datasets or data points
+     * @type {import('vue').ComputedRef<boolean>}
+     */
     const isEmpty = computed(() => {
         return datasetCount.value === 0 || dataPointCount.value === 0
     })

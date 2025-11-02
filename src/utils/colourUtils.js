@@ -1,5 +1,7 @@
 /**
- * Default color palette for charts
+ * Default color palette for charts (WCAG AA compliant)
+ * @type {string[]}
+ * @constant
  */
 export const DEFAULT_COLORS = [
     '#3b82f6', // blue
@@ -15,10 +17,13 @@ export const DEFAULT_COLORS = [
 ]
 
 /**
- * Get color from palette by index
- * @param {number} index - Color index
- * @param {Array<string>} palette - Optional custom palette
- * @returns {string} - Color value
+ * Get color from palette by index with wraparound
+ * @param {number} index - Color index (will wrap around if exceeds palette length)
+ * @param {string[]} [palette=DEFAULT_COLORS] - Optional custom color palette
+ * @returns {string} Color value (hex, rgb, or rgba)
+ * @example
+ * getColorByIndex(0) // Returns: "#3b82f6"
+ * getColorByIndex(15, DEFAULT_COLORS) // Wraps around: DEFAULT_COLORS[5]
  */
 export function getColorByIndex(index, palette = DEFAULT_COLORS) {
     return palette[index % palette.length]
@@ -27,8 +32,11 @@ export function getColorByIndex(index, palette = DEFAULT_COLORS) {
 /**
  * Generate color palette for datasets
  * @param {number} count - Number of colors needed
- * @param {Array<string>} customPalette - Optional custom palette
- * @returns {Array<string>} - Array of colors
+ * @param {string[]|null} [customPalette=null] - Optional custom color palette
+ * @returns {string[]} Array of color values
+ * @example
+ * const colors = generateColorPalette(3)
+ * // Returns: ["#3b82f6", "#8b5cf6", "#10b981"]
  */
 export function generateColorPalette(count, customPalette = null) {
     const palette = customPalette || DEFAULT_COLORS
@@ -43,8 +51,12 @@ export function generateColorPalette(count, customPalette = null) {
 
 /**
  * Convert hex color to RGB object
- * @param {string} hex - Hex color value
- * @returns {Object} - RGB object {r, g, b}
+ * @param {string} hex - Hex color value (with or without #)
+ * @returns {import('../types.js').RGBColor|null} RGB object {r, g, b} or null if invalid
+ * @example
+ * hexToRgb("#3b82f6") // Returns: { r: 59, g: 130, b: 246 }
+ * hexToRgb("3b82f6") // Returns: { r: 59, g: 130, b: 246 }
+ * hexToRgb("invalid") // Returns: null
  */
 export function hexToRgb(hex) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
@@ -58,11 +70,14 @@ export function hexToRgb(hex) {
 }
 
 /**
- * Convert RGB to hex color
+ * Convert RGB values to hex color string
  * @param {number} r - Red value (0-255)
  * @param {number} g - Green value (0-255)
  * @param {number} b - Blue value (0-255)
- * @returns {string} - Hex color value
+ * @returns {string} Hex color value with # prefix
+ * @example
+ * rgbToHex(59, 130, 246) // Returns: "#3b82f6"
+ * rgbToHex(255, 0, 0) // Returns: "#ff0000"
  */
 export function rgbToHex(r, g, b) {
     return '#' + [r, g, b].map(x => {
@@ -72,10 +87,13 @@ export function rgbToHex(r, g, b) {
 }
 
 /**
- * Add alpha channel to color
- * @param {string} color - Color value (hex or rgb)
- * @param {number} alpha - Alpha value (0-1)
- * @returns {string} - RGBA color value
+ * Add alpha (transparency) channel to color
+ * @param {string} color - Color value (hex, rgb, or rgba)
+ * @param {number} alpha - Alpha value (0-1, where 0=transparent, 1=opaque)
+ * @returns {string} RGBA color string
+ * @example
+ * addAlpha("#3b82f6", 0.5) // Returns: "rgba(59, 130, 246, 0.5)"
+ * addAlpha("rgb(59, 130, 246)", 0.3) // Returns: "rgba(59, 130, 246, 0.3)"
  */
 export function addAlpha(color, alpha) {
     if (color.startsWith('#')) {
@@ -94,8 +112,11 @@ export function addAlpha(color, alpha) {
 /**
  * Lighten a color by percentage
  * @param {string} color - Hex color value
- * @param {number} percent - Percentage to lighten (0-100)
- * @returns {string} - Lightened hex color
+ * @param {number} percent - Percentage to lighten (0-100, where 50=significantly lighter)
+ * @returns {string} Lightened hex color value
+ * @example
+ * lightenColor("#3b82f6", 20) // Returns: lighter blue
+ * lightenColor("#000000", 50) // Returns: "#7f7f7f" (gray)
  */
 export function lightenColor(color, percent) {
     const rgb = hexToRgb(color)
@@ -112,8 +133,11 @@ export function lightenColor(color, percent) {
 /**
  * Darken a color by percentage
  * @param {string} color - Hex color value
- * @param {number} percent - Percentage to darken (0-100)
- * @returns {string} - Darkened hex color
+ * @param {number} percent - Percentage to darken (0-100, where 50=significantly darker)
+ * @returns {string} Darkened hex color value
+ * @example
+ * darkenColor("#3b82f6", 20) // Returns: darker blue
+ * darkenColor("#ffffff", 50) // Returns: "#808080" (gray)
  */
 export function darkenColor(color, percent) {
     const rgb = hexToRgb(color)
@@ -128,9 +152,14 @@ export function darkenColor(color, percent) {
 }
 
 /**
- * Get contrasting text color (black or white) for background
- * @param {string} backgroundColor - Background color (hex)
- * @returns {string} - '#000000' or '#ffffff'
+ * Get contrasting text color (black or white) for background color
+ * Uses relative luminance calculation for WCAG compliance
+ * @param {string} backgroundColor - Background color (hex format)
+ * @returns {string} '#000000' for light backgrounds, '#ffffff' for dark backgrounds
+ * @example
+ * getContrastColor("#ffffff") // Returns: "#000000" (black text on white)
+ * getContrastColor("#000000") // Returns: "#ffffff" (white text on black)
+ * getContrastColor("#3b82f6") // Returns: "#ffffff" (white text on blue)
  */
 export function getContrastColor(backgroundColor) {
     const rgb = hexToRgb(backgroundColor)

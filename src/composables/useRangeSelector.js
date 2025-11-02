@@ -3,12 +3,32 @@ import { throttle } from '@/utils/performance.js'
 
 /**
  * Composable for managing range selector state and interactions
- * @param {Object} options - Configuration options
- * @param {number} options.initialStart - Initial start percentage (0-100)
- * @param {number} options.initialEnd - Initial end percentage (0-100)
- * @param {number} options.minWidth - Minimum range width percentage
- * @param {Function} options.onChange - Callback when range changes
- * @returns {Object} - Range selector state and methods
+ * Handles drag, touch, and keyboard interactions for range selection
+ * @param {{
+ *   initialStart?: number,
+ *   initialEnd?: number,
+ *   minWidth?: number,
+ *   onChange?: (range: {start: number, end: number}) => void
+ * }} [options={}] - Configuration options
+ * @param {number} [options.initialStart=0] - Initial start percentage (0-100)
+ * @param {number} [options.initialEnd=100] - Initial end percentage (0-100)
+ * @param {number} [options.minWidth=5] - Minimum range width percentage
+ * @param {(range: {start: number, end: number}) => void} [options.onChange=null] - Callback when range changes
+ * @returns {{
+ *   rangeStart: import('vue').Ref<number>,
+ *   rangeEnd: import('vue').Ref<number>,
+ *   isDragging: import('vue').Ref<boolean>,
+ *   rangeWindowStyle: import('vue').ComputedRef<{left: string, width: string}>,
+ *   startDrag: (type: 'start'|'end', event: MouseEvent|TouchEvent) => void,
+ *   handleKeydown: (event: KeyboardEvent, type: 'start'|'end') => void,
+ *   resetRange: () => void
+ * }} Range selector state and interaction handlers
+ * @example
+ * const { rangeStart, rangeEnd, startDrag, handleKeydown } = useRangeSelector({
+ *   initialStart: 0,
+ *   initialEnd: 100,
+ *   onChange: (range) => console.log(range)
+ * })
  */
 export function useRangeSelector(options = {}) {
     const {

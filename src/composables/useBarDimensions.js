@@ -3,18 +3,32 @@ import { calculateBarWidth as calculateBarWidthUtil } from '@/utils/chartCalcula
 
 /**
  * Composable for calculating bar dimensions and positions
- * @param {Object} params - Configuration parameters
- * @param {Ref|ComputedRef} params.labels - Chart labels (x-axis categories)
- * @param {Ref|ComputedRef} params.visibleDatasets - Visible datasets
- * @param {number} params.gapRatio - Gap ratio between bars (0-1), default 0.2
- * @param {boolean} params.stacked - Whether bars are stacked, default false
- * @returns {Object} - Bar dimension calculation functions
+ * Handles both grouped and stacked bar chart layouts
+ * @param {{
+ *   labels: import('vue').Ref<string[]>|import('vue').ComputedRef<string[]>,
+ *   visibleDatasets: import('vue').Ref<import('../types.js').Dataset[]>|import('vue').ComputedRef<import('../types.js').Dataset[]>,
+ *   gapRatio: number,
+ *   stacked: boolean
+ * }} params - Configuration parameters
+ * @param {import('vue').Ref<string[]>|import('vue').ComputedRef<string[]>} params.labels - Chart labels (x-axis categories)
+ * @param {import('vue').Ref<import('../types.js').Dataset[]>|import('vue').ComputedRef<import('../types.js').Dataset[]>} params.visibleDatasets - Visible datasets
+ * @param {number} [params.gapRatio=0.2] - Gap ratio between bars (0-1, where 0.2 = 20% gap)
+ * @param {boolean} [params.stacked=false] - Whether bars are stacked
+ * @returns {{
+ *   getGroupWidth: (chartArea: import('../types.js').ChartArea) => number,
+ *   getBarWidth: (chartArea: import('../types.js').ChartArea) => number,
+ *   getBarX: (labelIndex: number, datasetIndex: number, chartArea: import('../types.js').ChartArea) => number,
+ *   getGroupStart: (labelIndex: number, chartArea: import('../types.js').ChartArea) => number,
+ *   getGroupCenter: (labelIndex: number, chartArea: import('../types.js').ChartArea) => number
+ * }} Bar dimension calculation functions
+ * @example
+ * const { getBarWidth, getBarX } = useBarDimensions({ labels, visibleDatasets, gapRatio: 0.2, stacked: false })
  */
 export function useBarDimensions({ labels, visibleDatasets, gapRatio = 0.2, stacked = false }) {
     /**
      * Calculate the width of each group (category) along the x-axis
-     * @param {Object} chartArea - Chart area dimensions
-     * @returns {number} - Group width in pixels
+     * @param {import('../types.js').ChartArea} chartArea - Chart area dimensions
+     * @returns {number} Group width in pixels
      */
     const getGroupWidth = (chartArea) => {
         const labelCount = labels.value?.length || 0
@@ -26,8 +40,8 @@ export function useBarDimensions({ labels, visibleDatasets, gapRatio = 0.2, stac
      * Calculate the width of a single bar
      * For grouped bars: distributed among datasets
      * For stacked bars: takes full group width (minus gap)
-     * @param {Object} chartArea - Chart area dimensions
-     * @returns {number} - Bar width in pixels
+     * @param {import('../types.js').ChartArea} chartArea - Chart area dimensions
+     * @returns {number} Bar width in pixels
      */
     const getBarWidth = (chartArea) => {
         const labelCount = labels.value?.length || 0
@@ -46,11 +60,11 @@ export function useBarDimensions({ labels, visibleDatasets, gapRatio = 0.2, stac
     }
 
     /**
-     * Calculate the X position for a grouped bar
+     * Calculate the X position for a grouped or stacked bar
      * @param {number} labelIndex - Index of the category/label
      * @param {number} datasetIndex - Index of the dataset (0 for stacked)
-     * @param {Object} chartArea - Chart area dimensions
-     * @returns {number} - X position in pixels
+     * @param {import('../types.js').ChartArea} chartArea - Chart area dimensions
+     * @returns {number} X position in pixels
      */
     const getBarX = (labelIndex, datasetIndex, chartArea) => {
         const labelCount = labels.value?.length || 0
@@ -76,8 +90,8 @@ export function useBarDimensions({ labels, visibleDatasets, gapRatio = 0.2, stac
      * Calculate the start X position for a group
      * Useful for group labels or backgrounds
      * @param {number} labelIndex - Index of the category/label
-     * @param {Object} chartArea - Chart area dimensions
-     * @returns {number} - Group start X position
+     * @param {import('../types.js').ChartArea} chartArea - Chart area dimensions
+     * @returns {number} Group start X position in pixels
      */
     const getGroupStart = (labelIndex, chartArea) => {
         const groupWidth = getGroupWidth(chartArea)
@@ -88,8 +102,8 @@ export function useBarDimensions({ labels, visibleDatasets, gapRatio = 0.2, stac
      * Calculate the center X position for a group
      * Useful for centered labels
      * @param {number} labelIndex - Index of the category/label
-     * @param {Object} chartArea - Chart area dimensions
-     * @returns {number} - Group center X position
+     * @param {import('../types.js').ChartArea} chartArea - Chart area dimensions
+     * @returns {number} Group center X position in pixels
      */
     const getGroupCenter = (labelIndex, chartArea) => {
         const groupWidth = getGroupWidth(chartArea)

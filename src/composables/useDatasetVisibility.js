@@ -2,8 +2,19 @@ import { ref, computed } from 'vue'
 
 /**
  * Composable for managing dataset visibility (show/hide datasets via legend)
- * @param {Object} datasets - Ref or computed containing datasets array
- * @returns {Object} - Dataset visibility state and methods
+ * Tracks which datasets are disabled and provides toggle functionality
+ * @param {import('vue').ComputedRef<import('../types.js').Dataset[]>} datasets - Ref or computed containing datasets array
+ * @returns {{
+ *   disabledDatasets: import('vue').Ref<Set<number>>,
+ *   visibleDatasets: import('vue').ComputedRef<import('../types.js').Dataset[]>,
+ *   toggleDataset: (index: number) => boolean,
+ *   isDatasetDisabled: (index: number) => boolean,
+ *   showAllDatasets: () => void,
+ *   hideAllDatasets: () => void,
+ *   handleLegendToggle: (event: {index: number}) => void
+ * }} Object with visibility state and toggle methods
+ * @example
+ * const { visibleDatasets, toggleDataset, handleLegendToggle } = useDatasetVisibility(datasets)
  */
 export function useDatasetVisibility(datasets) {
     // Track which dataset indices are disabled
@@ -20,7 +31,7 @@ export function useDatasetVisibility(datasets) {
     /**
      * Toggle dataset visibility by index
      * @param {number} index - Dataset index to toggle
-     * @returns {boolean} - New disabled state (true if now disabled)
+     * @returns {boolean} New disabled state (true if now disabled, false if now visible)
      */
     function toggleDataset(index) {
         if (disabledDatasets.value.has(index)) {
@@ -33,9 +44,9 @@ export function useDatasetVisibility(datasets) {
     }
 
     /**
-     * Check if a dataset is disabled
+     * Check if a dataset is currently disabled
      * @param {number} index - Dataset index
-     * @returns {boolean} - True if disabled
+     * @returns {boolean} True if dataset is disabled/hidden
      */
     function isDatasetDisabled(index) {
         return disabledDatasets.value.has(index)
@@ -58,8 +69,8 @@ export function useDatasetVisibility(datasets) {
 
     /**
      * Handle legend toggle event
-     * Standard event handler for ChartLegend @toggle events
-     * @param {Object} event - Event from ChartLegend { index, disabled }
+     * Standard event handler for ChartLegend component @toggle events
+     * @param {{index: number, disabled?: boolean}} event - Event from ChartLegend with dataset index
      */
     function handleLegendToggle(event) {
         toggleDataset(event.index)
