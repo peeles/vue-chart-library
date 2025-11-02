@@ -2,7 +2,7 @@
     <div
         ref="containerRef"
         :style="containerStyle"
-        class="relative w-full h-full overflow-visible"
+        class="relative w-full h-full"
     >
         <svg
             :aria-label="ariaLabel"
@@ -32,6 +32,8 @@
             :size="loadingSpinnerSize"
             :visible="isLoading"
         />
+
+        <slot name="additional_controls" />
     </div>
 </template>
 

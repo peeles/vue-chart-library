@@ -1,6 +1,6 @@
 <template>
-    <div class="relative flex flex-col flex-1 gap-4 w-full h-full">
-        <line-chart
+    <div class="relative flex flex-col gap-4 w-full">
+        <LineChart
             :data="visibleData"
             :height="height"
             :options="chartOptions"
@@ -8,30 +8,37 @@
             aria-label="Area Chart with Range Selector"
             @legend-toggle="$emit('legend-toggle', $event)"
             @point-click="$emit('point-click', $event)"
-        />
-
-        <div
-            v-if="showRangeSelector"
-            class="w-full bg-gray-50 rounded-lg py-2.5"
         >
-            <div class="relative w-full h-[60px]" :style="{ paddingLeft: `${chartPadding.left}px`, paddingRight: `${chartPadding.right}px` }">
-                <div class="absolute inset-0 pointer-events-none">
+            <template
+                v-if="showRangeSelector"
+                #additional_controls
+            >
+                <div
+                    id="range-selector"
+                    class="relative w-full h-[60px] bg-gray-50 rounded-lg py-2.5 mt-3"
+                >
                     <div
-                        class="absolute top-0 h-full bg-blue-500/10 border-l-2 border-r-2 border-blue-500 pointer-events-auto"
-                        :style="rangeWindowStyle"
+                        id="range-overlay"
+                        class="absolute top-0 bottom-0 pointer-events-none"
+                        :style="{ left: `${chartPadding.left}px`, right: '0' }"
                     >
                         <div
-                            class="range-handle absolute top-1/2 -translate-y-1/2 w-3 h-10 bg-blue-500 rounded-md cursor-ew-resize shadow-md transition-all duration-200 ease-linear hover:bg-blue-600 hover:shadow-lg -left-1.5"
-                            @mousedown="startDrag('start', $event)"
-                        ></div>
-                        <div
-                            class="range-handle absolute top-1/2 -translate-y-1/2 w-3 h-10 bg-blue-500 rounded-md cursor-ew-resize shadow-md transition-all duration-200 ease-linear hover:bg-blue-600 hover:shadow-lg -right-1.5"
-                            @mousedown="startDrag('end', $event)"
-                        ></div>
+                            class="absolute top-0 h-full bg-blue-500/10 border-l-2 border-r-2 border-blue-500 pointer-events-auto"
+                            :style="rangeWindowStyle"
+                        >
+                            <div
+                                class="range-handle absolute top-1/2 -translate-y-1/2 w-3 h-10 bg-blue-500 rounded-md cursor-ew-resize shadow-md transition-all duration-200 ease-linear hover:bg-blue-600 hover:shadow-lg -left-1.5"
+                                @mousedown="startDrag('start', $event)"
+                            ></div>
+                            <div
+                                class="range-handle absolute top-1/2 -translate-y-1/2 w-3 h-10 bg-blue-500 rounded-md cursor-ew-resize shadow-md transition-all duration-200 ease-linear hover:bg-blue-600 hover:shadow-lg -right-1.5"
+                                @mousedown="startDrag('end', $event)"
+                            ></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </template>
+        </LineChart>
     </div>
 </template>
 
@@ -115,34 +122,24 @@ const visibleData = computed(() => {
     }
 })
 
-// Mini chart data (full dataset with simplified styling)
-const miniData = computed(() => {
-    return {
-        labels: props.data.labels,
-        datasets: props.data.datasets.map(dataset => ({
-            ...dataset,
-            borderWidth: 1,
-            fill: true,
-            fillOpacity: 0.2,
-            showPoints: false,
-            pointRadius: 0
-        }))
-    }
-})
-
 // Chart options with flush x-axis labels
 const chartOptions = computed(() => {
     return {
         ...config.value,
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: true,
+        aspectRatio: 3,
+        padding: {
+            ...config.value.padding,
+            right: 0
+        },
         scales: {
             ...config.value.scales,
             x: {
                 ...config.value.scales?.x,
                 type: 'category',
                 position: 'bottom',
-                flush: true // Custom flag for flush labels
+                flush: true,
             }
         }
     }
@@ -172,7 +169,7 @@ function startDrag(type, event) {
 function handleDrag(event) {
     if (!isDragging.value) return
 
-    const container = event.target.closest('.range-overlay') || event.target.closest('.range-selector')
+    const container = event.target.closest('#range-overlay') || event.target.closest('#range-selector')
     if (!container) return
 
     const rect = container.getBoundingClientRect()

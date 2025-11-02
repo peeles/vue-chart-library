@@ -1,5 +1,5 @@
 <template>
-    <base-chart
+    <BaseChart
         :data="data"
         :height="height"
         :options="options"
@@ -9,7 +9,7 @@
     >
         <template #default="{ chartArea }">
             <!-- Y Axis -->
-            <chart-axis
+            <ChartAxis
                 v-if="scales.y?.display !== false"
                 :chart-area="chartArea"
                 :show-grid="scales.y?.grid?.display !== false"
@@ -21,7 +21,7 @@
             />
 
             <!-- X Axis -->
-            <chart-axis
+            <ChartAxis
                 v-if="scales.x?.display !== false"
                 :chart-area="chartArea"
                 :show-grid="scales.x?.grid?.display !== false"
@@ -97,7 +97,10 @@
                 :y="tooltip.y"
             />
         </template>
-    </base-chart>
+        <template #additional_controls>
+            <slot name="additional_controls" />
+        </template>
+    </BaseChart>
 </template>
 
 <script setup>
