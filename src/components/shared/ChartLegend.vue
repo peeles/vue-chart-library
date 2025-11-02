@@ -2,15 +2,15 @@
     <div
         v-if="datasets.length > 0"
         :class="legendClasses"
-        class="chart-legend"
+        class="flex flex-wrap gap-4 py-3 px-2"
     >
         <div
             v-for="(dataset, index) in datasets"
             :key="index"
             :aria-label="`Toggle ${dataset.label}`"
             :aria-pressed="!isDisabled(index)"
-            :class="{ 'legend-item-disabled': isDisabled(index) }"
-            class="legend-item"
+            :class="{ 'opacity-40': isDisabled(index), 'legend-item-interactive': props.interactive }"
+            class="legend-item flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-gray-700 transition-all duration-200 ease-linear rounded-lg"
             role="button"
             tabindex="0"
             @click="toggleDataset(index)"
@@ -18,9 +18,10 @@
         >
             <span
                 :style="{ backgroundColor: dataset.backgroundColor }"
-                class="legend-marker"
+                :class="{ 'opacity-30': isDisabled(index) }"
+                class="legend-marker w-3.5 h-3.5 rounded flex-shrink-0 shadow-sm transition-all duration-200 ease-linear"
             ></span>
-            <span class="legend-label">{{ dataset.label }}</span>
+            <span :class="{ 'line-through': isDisabled(index) }" class="whitespace-nowrap tracking-tight">{{ dataset.label }}</span>
         </div>
     </div>
 </template>
@@ -57,10 +58,16 @@ const emit = defineEmits(['toggle'])
 
 const disabledDatasets = ref(new Set())
 
-const legendClasses = computed(() => ({
-    [`legend-${props.position}`]: true,
-    'legend-interactive': props.interactive
-}))
+const legendClasses = computed(() => {
+    const positionClasses = {
+        top: 'flex-row justify-center',
+        bottom: 'flex-row justify-center',
+        left: 'flex-col justify-start',
+        right: 'flex-col justify-start'
+    }
+
+    return positionClasses[props.position] || 'flex-row justify-center'
+})
 
 const isDisabled = (index) => {
     return disabledDatasets.value.has(index)
@@ -82,86 +89,30 @@ const toggleDataset = (index) => {
 }
 </script>
 
-<style scoped>
-.chart-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    padding: 0.75rem 0.5rem;
-}
-
-.legend-top,
-.legend-bottom {
-    flex-direction: row;
-    justify-content: center;
-}
-
-.legend-left,
-.legend-right {
-    flex-direction: column;
-    justify-content: flex-start;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.625rem;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--chart-text-color, #374151);
-    transition: all 0.2s ease;
-    border-radius: 0.5rem;
-}
-
-.legend-interactive .legend-item {
+<style>
+/* Interactive legend item states */
+.legend-item-interactive {
     cursor: pointer;
     user-select: none;
 }
 
-.legend-interactive .legend-item:hover {
+.legend-item-interactive:hover {
     background-color: rgba(0, 0, 0, 0.03);
     transform: translateY(-1px);
 }
 
-.legend-interactive .legend-item:active {
+.legend-item-interactive:active {
     transform: translateY(0);
 }
 
-.legend-interactive .legend-item:focus {
+.legend-item-interactive:focus {
     outline: 2px solid var(--chart-primary, #3b82f6);
     outline-offset: 2px;
     background-color: rgba(59, 130, 246, 0.05);
 }
 
-.legend-item-disabled {
-    opacity: 0.4;
-}
-
-.legend-item-disabled .legend-marker {
-    opacity: 0.3;
-}
-
-.legend-item-disabled .legend-label {
-    text-decoration: line-through;
-}
-
-.legend-marker {
-    width: 0.875rem;
-    height: 0.875rem;
-    border-radius: 0.25rem;
-    flex-shrink: 0;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s ease;
-}
-
-.legend-interactive .legend-item:hover .legend-marker {
+.legend-item-interactive:hover .legend-marker {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
     transform: scale(1.1);
-}
-
-.legend-label {
-    white-space: nowrap;
-    letter-spacing: -0.01em;
 }
 </style>

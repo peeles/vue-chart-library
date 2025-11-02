@@ -2,13 +2,13 @@
     <div
         ref="containerRef"
         :style="containerStyle"
-        class="chart-container"
+        class="relative w-full h-full"
     >
         <svg
             :aria-label="ariaLabel"
-            :class="{ 'chart-svg-loaded': !isLoading }"
+            :class="{ 'opacity-100': !isLoading }"
             :viewBox="`0 0 ${svgWidth} ${svgHeight}`"
-            class="chart-svg"
+            class="block w-full h-full max-w-full max-h-full opacity-0 transition-opacity duration-300 ease-in"
             preserveAspectRatio="xMidYMid meet"
             role="img"
         >
@@ -20,8 +20,8 @@
         </svg>
 
         <chart-legend
-            v-if="showLegend && normalizedDatasets.length > 0"
-            :datasets="normalizedDatasets"
+            v-if="showLegend && normalisedDatasets.length > 0"
+            :datasets="normalisedDatasets"
             :interactive="legendInteractive"
             :position="legendPosition"
             @toggle="handleLegendToggle"
@@ -32,6 +32,8 @@
             :size="loadingSpinnerSize"
             :visible="isLoading"
         />
+
+        <slot name="additional_controls" />
     </div>
 </template>
 
@@ -128,7 +130,7 @@ const {
 } = useChartConfig(optionsRef)
 
 const {
-    normalizedDatasets,
+    normalisedDatasets,
     isEmpty
 } = useChartData(dataRef, optionsRef)
 
@@ -233,30 +235,7 @@ defineExpose({
     chartArea,
     svgWidth,
     svgHeight,
-    normalizedDatasets,
+    normalisedDatasets,
     isEmpty
 })
 </script>
-
-<style scoped>
-.chart-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
-
-.chart-svg {
-    display: block;
-    width: 100%;
-    height: 100%;
-    max-width: 100%;
-    max-height: 100%;
-    opacity: 0;
-    transition: opacity 0.3s ease-in;
-}
-
-.chart-svg-loaded {
-    opacity: 1;
-}
-</style>

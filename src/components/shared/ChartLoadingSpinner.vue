@@ -3,10 +3,10 @@
         v-if="visible"
         aria-label="Loading chart"
         aria-live="polite"
-        class="chart-loading-overlay"
+        class="absolute inset-0 flex items-center justify-center bg-white/90 z-[100] rounded-[inherit] transition-opacity duration-200 ease-linear"
         role="status"
     >
-        <div class="spinner-container">
+        <div class="flex flex-col items-center gap-3">
             <svg
                 :height="size"
                 :width="size"
@@ -31,7 +31,7 @@
                     stroke-width="4"
                 />
             </svg>
-            <span v-if="message" class="spinner-message">{{ message }}</span>
+            <span v-if="message" class="text-sm font-medium text-gray-700 tracking-tight">{{ message }}</span>
         </div>
     </div>
 </template>
@@ -69,29 +69,8 @@ defineProps({
 })
 </script>
 
-<style scoped>
-.chart-loading-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--chart-loading-bg, rgba(255, 255, 255, v-bind(opacity)));
-    z-index: 100;
-    border-radius: inherit;
-    transition: opacity 0.2s ease;
-}
-
-.spinner-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-}
-
+<style>
+/* Spinner rotation and dash animations */
 .spinner {
     animation: rotate 1.4s linear infinite;
     transform-origin: center;
@@ -106,13 +85,6 @@ defineProps({
     stroke-dasharray: 80, 200;
     stroke-dashoffset: 0;
     animation: dash 1.4s ease-in-out infinite;
-}
-
-.spinner-message {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--chart-text-color, #374151);
-    letter-spacing: -0.01em;
 }
 
 @keyframes rotate {

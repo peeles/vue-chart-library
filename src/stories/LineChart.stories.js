@@ -1,4 +1,4 @@
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import LineChart from '../components/charts/LineChart.vue'
 
 /**
@@ -207,7 +207,12 @@ export const StraightLines = {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
         }
     }
 }
@@ -255,7 +260,12 @@ export const WithAreaFills = {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true
+                }
+            }
         }
     }
 }
@@ -300,7 +310,12 @@ export const DashedLines = {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true
+                }
+            }
         }
     }
 }
@@ -337,7 +352,12 @@ export const NoPoints = {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
         }
     }
 }
@@ -472,7 +492,12 @@ export const Interactive = {
     args: {
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
         }
     }
 }
@@ -510,6 +535,11 @@ export const StockChart = {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
             scales: {
                 x: {
                     ticks: {
@@ -593,7 +623,238 @@ export const WithLoadingSpinner = {
     args: {
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
         }
     }
+}
+
+/**
+ * Advanced Interactive - ApexCharts-style area chart with multiple series
+ */
+export const AdvancedInteractive = {
+    render: () => ({
+        components: { LineChart },
+        setup() {
+            const chartData = ref({
+                labels: [
+                    '12 Nov', '14 Nov', '16 Nov', '18 Nov', '20 Nov',
+                    '22 Nov', '24 Nov', '26 Nov', '28 Nov', '30 Nov'
+                ],
+                datasets: [
+                    {
+                        label: 'Total Views',
+                        data: [15, 28, 38, 32, 41, 35, 48, 42, 36, 45],
+                        borderColor: '#10b981',
+                        backgroundColor: '#10b981',
+                        borderWidth: 3,
+                        fill: true,
+                        fillOpacity: 0.3,
+                        tension: 0.4,
+                        pointBackgroundColor: '#10b981',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        showPoints: true
+                    },
+                    {
+                        label: 'Unique Views',
+                        data: [8, 18, 25, 20, 28, 22, 32, 28, 24, 30],
+                        borderColor: '#3b82f6',
+                        backgroundColor: '#3b82f6',
+                        borderWidth: 3,
+                        fill: true,
+                        fillOpacity: 0.3,
+                        tension: 0.4,
+                        pointBackgroundColor: '#3b82f6',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        showPoints: true
+                    }
+                ]
+            })
+
+            const showGridLines = ref(true)
+            const showDataPoints = ref(true)
+
+            const chartOptions = computed(() => ({
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: {
+                            display: showGridLines.value,
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: showGridLines.value,
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    }
+                }
+            }))
+
+            const displayData = computed(() => {
+                return {
+                    labels: chartData.value.labels,
+                    datasets: chartData.value.datasets.map(dataset => ({
+                        ...dataset,
+                        showPoints: showDataPoints.value
+                    }))
+                }
+            })
+
+            const toggleGrid = () => {
+                showGridLines.value = !showGridLines.value
+            }
+
+            const togglePoints = () => {
+                showDataPoints.value = !showDataPoints.value
+            }
+
+            const resetZoom = () => {
+                chartData.value = {
+                    labels: [
+                        '12 Nov', '14 Nov', '16 Nov', '18 Nov', '20 Nov',
+                        '22 Nov', '24 Nov', '26 Nov', '28 Nov', '30 Nov'
+                    ],
+                    datasets: [
+                        {
+                            label: 'Total Views',
+                            data: [15, 28, 38, 32, 41, 35, 48, 42, 36, 45],
+                            borderColor: '#10b981',
+                            backgroundColor: '#10b981',
+                            borderWidth: 3,
+                            fill: true,
+                            fillOpacity: 0.3,
+                            tension: 0.4,
+                            pointBackgroundColor: '#10b981',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            showPoints: true
+                        },
+                        {
+                            label: 'Unique Views',
+                            data: [8, 18, 25, 20, 28, 22, 32, 28, 24, 30],
+                            borderColor: '#3b82f6',
+                            backgroundColor: '#3b82f6',
+                            borderWidth: 3,
+                            fill: true,
+                            fillOpacity: 0.3,
+                            tension: 0.4,
+                            pointBackgroundColor: '#3b82f6',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            showPoints: true
+                        }
+                    ]
+                }
+            }
+
+            return {
+                displayData,
+                chartOptions,
+                showGridLines,
+                showDataPoints,
+                toggleGrid,
+                togglePoints,
+                resetZoom
+            }
+        },
+        template: `
+            <div style="width: 100%; background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
+                <!-- Toolbar -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 16px; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span style="width: 12px; height: 12px; background: #10b981; border-radius: 50%; display: inline-block;"></span>
+                            <span style="font-size: 14px; color: #374151; font-weight: 500;">Total Views</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span style="width: 12px; height: 12px; background: #3b82f6; border-radius: 50%; display: inline-block;"></span>
+                            <span style="font-size: 14px; color: #374151; font-weight: 500;">Unique Views</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button
+                            @click="toggleGrid"
+                            :style="{
+                                padding: '6px 12px',
+                                background: showGridLines ? '#f3f4f6' : 'white',
+                                border: '1px solid #e5e7eb',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                fontSize: '13px',
+                                fontWeight: '500',
+                                color: '#374151'
+                            }"
+                            title="Toggle Grid"
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="3" y1="9" x2="21" y2="9"></line>
+                                <line x1="3" y1="15" x2="21" y2="15"></line>
+                                <line x1="9" y1="3" x2="9" y2="21"></line>
+                                <line x1="15" y1="3" x2="15" y2="21"></line>
+                            </svg>
+                        </button>
+                        <button
+                            @click="togglePoints"
+                            :style="{
+                                padding: '6px 12px',
+                                background: showDataPoints ? '#f3f4f6' : 'white',
+                                border: '1px solid #e5e7eb',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                fontSize: '13px',
+                                fontWeight: '500',
+                                color: '#374151'
+                            }"
+                            title="Toggle Points"
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <circle cx="12" cy="12" r="4"></circle>
+                            </svg>
+                        </button>
+                        <button
+                            @click="resetZoom"
+                            style="padding: 6px 12px; background: white; border: 1px solid #e5e7eb; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; color: #374151;"
+                            title="Reset"
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+                                <path d="M21 3v5h-5"></path>
+                                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+                                <path d="M3 21v-5h5"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <div style="width: 100%; height: 400px;">
+                    <line-chart
+                        :data="displayData"
+                        :options="chartOptions"
+                    />
+                </div>
+
+                <!-- Info -->
+                <div style="margin-top: 20px; padding: 16px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+                    <p style="margin: 0; font-size: 13px; color: #6b7280; line-height: 1.6;">
+                        <strong style="color: #374151;">Interactive Features:</strong> Hover over data points to see values,
+                        toggle grid lines and points visibility, and use the toolbar controls to customise the view.
+                    </p>
+                </div>
+            </div>
+        `
+    })
 }

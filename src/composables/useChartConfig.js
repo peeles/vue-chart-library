@@ -9,7 +9,7 @@ const DEFAULT_CONFIG = {
     aspectRatio: 2,
     padding: {
         top: 20,
-        right: 20,
+        right: 60,
         bottom: 40,
         left: 50
     },
@@ -20,6 +20,7 @@ const DEFAULT_CONFIG = {
     scales: {
         x: {
             display: true,
+            flush: true,
             grid: {
                 display: true,
                 color: 'var(--chart-grid-color, #e5e7eb)'
