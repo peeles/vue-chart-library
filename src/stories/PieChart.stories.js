@@ -1,49 +1,51 @@
 import { onMounted, ref } from 'vue'
 import PieChart from '../components/charts/PieChart.vue'
 
-/**
- * # PieChart Component
- *
- * A fully responsive and highly customisable pie/donut chart component for Vue 3.
- * Perfect for showing proportions, percentages, and part-to-whole relationships.
- *
- * ## Features
- * - **Donut Mode**: Optional center hole with custom labels
- * - **Exploded Slices**: Separate slices for emphasis (all or individual)
- * - **Flexible Labels**: Inner, outer, or no labels with multiple format options
- * - **Interactive**: Hover tooltips and click events
- * - **Customisable**: Full control over colours, borders, angles, and appearance
- *
- * ## Installation
- * ```js
- * import { PieChart } from '@vue-charts/core'
- * import '@vue-charts/core/style.css'
- * ```
- *
- * ## Basic Usage
- * ```vue
- * <template>
- *   <pie-chart :data="chartData" :options="chartOptions" />
- * </template>
- *
- * <script setup>
- * import { PieChart } from '@vue-charts/core'
- *
- * const chartData = {
- *   labels: ['Red', 'Blue', 'Yellow', 'Green'],
- *   datasets: [{
- *     data: [12, 19, 8, 15],
- *     backgroundColor: ['#ef4444', '#3b82f6', '#eab308', '#10b981']
- *   }]
- * }
- * </script>
- * ```
- */
 export default {
     title: 'Charts/PieChart',
     component: PieChart,
     parameters: {
-        layout: 'padded'
+        layout: 'padded',
+        docs: {
+            description: {
+                component: `# PieChart Component
+
+A fully responsive and highly customisable pie and donut chart component for Vue 3.
+
+## Features
+- **Donut Mode**: Optional centre hole with custom labels
+- **Exploded Slices**: Separate slices for emphasis (all or individual)
+- **Flexible Labels**: Inner, outer, or no labels with multiple format options
+- **Interactive**: Hover tooltips and click events
+- **Customisable**: Full control over colours, borders, angles, and appearance
+
+## Installation
+\`\`\`js
+import { PieChart } from '@vue-charts/core'
+import '@vue-charts/core/style.css'
+\`\`\`
+
+## Basic Usage
+\`\`\`vue
+<template>
+  <pie-chart :data="chartData" :options="chartOptions" />
+</template>
+
+<script setup>
+import { PieChart } from '@vue-charts/core'
+
+const chartData = {
+  labels: ['Red', 'Blue', 'Yellow', 'Green'],
+  datasets: [{
+    data: [12, 19, 8, 15],
+    backgroundColor: ['#ef4444', '#3b82f6', '#eab308', '#10b981']
+  }]
+}
+</script>
+\`\`\`
+`
+            }
+        }
     },
     argTypes: {
         data: {
@@ -61,9 +63,6 @@ export default {
     }
 }
 
-/**
- * Default Story - Basic pie chart
- */
 export const Default = {
     render: (args) => ({
         components: { PieChart },
@@ -101,12 +100,16 @@ export const Default = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Basic pie chart showcasing balanced departmental distribution.'
+            }
+        }
     }
 }
 
-/**
- * Donut Chart - With center label
- */
 export const DonutChart = {
     render: (args) => ({
         components: { PieChart },
@@ -147,12 +150,16 @@ export const DonutChart = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Donut presentation with a central label summarising the total share.'
+            }
+        }
     }
 }
 
-/**
- * Inner Labels - Labels on slices
- */
 export const InnerLabels = {
     render: (args) => ({
         components: { PieChart },
@@ -192,12 +199,16 @@ export const InnerLabels = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Places percentage labels directly on each slice for immediate context.'
+            }
+        }
     }
 }
 
-/**
- * Outer Labels - Labels with connecting lines
- */
 export const OuterLabels = {
     render: (args) => ({
         components: { PieChart },
@@ -235,12 +246,16 @@ export const OuterLabels = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Shows outer labels with leader lines for clarity on smaller slices.'
+            }
+        }
     }
 }
 
-/**
- * Label Formats - Different label display options
- */
 export const LabelFormats = {
     render: (args) => ({
         components: { PieChart },
@@ -319,12 +334,16 @@ export const LabelFormats = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Interactive controls for switching between label formats (percentage, value, label, or both).'
+            }
+        }
     }
 }
 
-/**
- * Custom Start Angle - Start from different position
- */
 export const CustomStartAngle = {
     render: (args) => ({
         components: { PieChart },
@@ -394,12 +413,16 @@ export const CustomStartAngle = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Allows adjusting the starting angle of the pie chart via a range control.'
+            }
+        }
     }
 }
 
-/**
- * Donut Thickness - Adjustable donut width
- */
 export const DonutThickness = {
     render: (args) => ({
         components: { PieChart },
@@ -473,12 +496,16 @@ export const DonutThickness = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Interactive donut thickness control with live preview and centre label.'
+            }
+        }
     }
 }
 
-/**
- * Interactive - Click events and dynamic data
- */
 export const Interactive = {
     render: (args) => ({
         components: { PieChart },
@@ -565,12 +592,16 @@ export const Interactive = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Interactive example with slice click tracking and data randomisation.'
+            }
+        }
     }
 }
 
-/**
- * With Loading Spinner
- */
 export const WithLoadingSpinner = {
     render: (args) => ({
         components: { PieChart },
@@ -646,6 +677,13 @@ export const WithLoadingSpinner = {
                     display: true,
                     position: 'bottom'
                 }
+            }
+        }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates asynchronous loading with a donut chart and reload control.'
             }
         }
     }

@@ -1,54 +1,58 @@
+import { expect, within } from '@storybook/test'
 import { onMounted, ref } from 'vue'
 import BarChart from '../components/charts/BarChart.vue'
 
-/**
- * # BarChart Component
- *
- * A fully responsive and customizable bar chart component for Vue 3.
- *
- * ## Features
- * - **Responsive**: Automatically adapts to container size
- * - **Interactive**: Hover tooltips and click events
- * - **Customizable**: Full control over colors, spacing, and appearance
- * - **Accessible**: ARIA labels and keyboard navigation
- * - **Multiple Datasets**: Support for comparing multiple data series
- *
- * ## Installation
- * ```js
- * import { BarChart } from '@vue-charts/core'
- * import '@vue-charts/core/style.css'
- * ```
- *
- * ## Basic Usage
- * ```vue
- * <template>
- *   <bar-chart :data="chartData" :options="chartOptions" />
- * </template>
- *
- * <script setup>
- * import { BarChart } from '@vue-charts/core'
- *
- * const chartData = {
- *   labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
- *   datasets: [{
- *     label: 'Sales 2024',
- *     data: [12, 19, 3, 5, 2, 8],
- *     backgroundColor: '#3b82f6'
- *   }]
- * }
- *
- * const chartOptions = {
- *   responsive: true,
- *   maintainAspectRatio: true
- * }
- * </script>
- * ```
- */
 export default {
     title: 'Charts/BarChart',
     component: BarChart,
     parameters: {
-        layout: 'padded'
+        layout: 'padded',
+        docs: {
+            description: {
+                component: `# BarChart Component
+
+A fully responsive and customisable bar chart component for Vue 3.
+
+## Features
+- **Responsive**: Automatically adapts to container size
+- **Interactive**: Hover tooltips and click events
+- **Customisable**: Full control over colours, spacing, and appearance
+- **Accessible**: ARIA labels and keyboard navigation
+- **Multiple Datasets**: Support for comparing multiple data series
+
+## Installation
+\`\`\`js
+import { BarChart } from '@vue-charts/core'
+import '@vue-charts/core/style.css'
+\`\`\`
+
+## Basic Usage
+\`\`\`vue
+<template>
+  <bar-chart :data="chartData" :options="chartOptions" />
+</template>
+
+<script setup>
+import { BarChart } from '@vue-charts/core'
+
+const chartData = {
+  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+  datasets: [{
+    label: 'Sales 2024',
+    data: [12, 19, 3, 5, 2, 8],
+    backgroundColor: '#3b82f6'
+  }]
+}
+
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: true
+}
+</script>
+\`\`\`
+`
+            }
+        }
     },
     argTypes: {
         data: {
@@ -100,9 +104,6 @@ export default {
     }
 }
 
-/**
- * Default Story - Basic bar chart with single dataset
- */
 export const Default = {
     render: (args) => ({
         components: { BarChart },
@@ -154,22 +155,16 @@ export const Default = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Basic bar chart with a single dataset and responsive layout.'
+            }
+        }
     }
 }
 
-/**
- * ## Multiple Datasets
- *
- * Compare multiple data series side by side. Perfect for year-over-year
- * comparisons or category analysis.
- *
- * ### Test Cases:
- * - ✓ Multiple datasets render correctly
- * - ✓ Bars are grouped properly
- * - ✓ Different colors applied to each dataset
- * - ✓ Legend shows all datasets
- * - ✓ Tooltip shows correct dataset information
- */
 export const MultipleDatasets = {
     render: (args) => ({
         components: { BarChart },
@@ -220,20 +215,38 @@ export const MultipleDatasets = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `## Multiple Datasets
+
+Compare multiple data series side by side for year-over-year or category analysis.`
+            }
+        }
+    },
+    play: async ({ args, step }) => {
+        await step('renders multiple datasets', async () => {
+            expect(args.data.datasets.length).toBeGreaterThan(1)
+        })
+
+        await step('keeps dataset lengths aligned with labels', async () => {
+            args.data.datasets.forEach((dataset) => {
+                expect(dataset.data.length).toBe(args.data.labels.length)
+            })
+        })
+
+        await step('applies distinct dataset colours', async () => {
+            const colours = args.data.datasets.map((dataset) => dataset.backgroundColor)
+            expect(new Set(colours).size).toBe(colours.length)
+        })
+
+        await step('enables legend display for all datasets', async () => {
+            expect(args.options.plugins?.legend?.display).toBe(true)
+        })
     }
 }
 
-/**
- * ## No Grid Lines
- *
- * Clean chart without grid lines for a minimalist appearance.
- *
- * ### Test Cases:
- * - ✓ Grid lines are hidden
- * - ✓ Axis lines still visible
- * - ✓ Chart remains readable
- * - ✓ Tick marks and labels display correctly
- */
 export const NoGridLines = {
     render: (args) => ({
         components: { BarChart },
@@ -275,20 +288,36 @@ export const NoGridLines = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `## No Grid Lines
+
+Minimalist presentation with the grid removed while retaining axis context.`
+            }
+        }
+    },
+    play: async ({ args, step }) => {
+        await step('disables x-axis grid lines', async () => {
+            expect(args.options.scales?.x?.grid?.display).toBe(false)
+        })
+
+        await step('disables y-axis grid lines', async () => {
+            expect(args.options.scales?.y?.grid?.display).toBe(false)
+        })
+
+        await step('retains axis definitions', async () => {
+            expect(args.options.scales?.x).toBeTruthy()
+            expect(args.options.scales?.y).toBeTruthy()
+        })
+
+        await step('provides dataset values for rendering', async () => {
+            expect(args.data.datasets[0].data.length).toBeGreaterThan(0)
+        })
     }
 }
 
-/**
- * ## Custom Colors
- *
- * Each bar can have its own color for categorical data visualization.
- *
- * ### Test Cases:
- * - ✓ Individual bar colors applied correctly
- * - ✓ Border colors match or complement background
- * - ✓ Colors are visually distinct
- * - ✓ Accessibility standards met for color contrast
- */
 export const CustomColors = {
     render: (args) => ({
         components: { BarChart },
@@ -317,22 +346,36 @@ export const CustomColors = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `## Custom Colours
+
+Assign unique colours per bar for categorical comparisons.`
+            }
+        }
+    },
+    play: async ({ args, step }) => {
+        await step('provides per-bar background colours', async () => {
+            const dataset = args.data.datasets[0]
+            expect(Array.isArray(dataset.backgroundColor)).toBe(true)
+            expect(dataset.backgroundColor.length).toBe(args.data.labels.length)
+        })
+
+        await step('matches border colour configuration', async () => {
+            const dataset = args.data.datasets[0]
+            expect(Array.isArray(dataset.borderColor)).toBe(true)
+            expect(dataset.borderColor.length).toBe(dataset.backgroundColor.length)
+        })
+
+        await step('ensures colours are distinct', async () => {
+            const dataset = args.data.datasets[0]
+            expect(new Set(dataset.backgroundColor).size).toBe(dataset.backgroundColor.length)
+        })
     }
 }
 
-/**
- * ## Interactive Example
- *
- * Demonstrates click events and dynamic data updates. Click bars to see events,
- * use the button to randomize data.
- *
- * ### Test Cases:
- * - ✓ Bar click events fire correctly
- * - ✓ Event payload contains correct data
- * - ✓ Chart updates smoothly when data changes
- * - ✓ Transitions are smooth and performant
- * - ✓ No memory leaks on repeated updates
- */
 export const Interactive = {
     render: (args) => ({
         components: { BarChart },
@@ -415,20 +458,35 @@ export const Interactive = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `## Interactive Example
+
+Demonstrates click events, dynamic data updates, and a recent activity panel.`
+            }
+        }
+    },
+    play: async ({ canvasElement, args, step }) => {
+        const canvas = within(canvasElement)
+
+        await step('shows randomise data control', async () => {
+            const button = await canvas.findByRole('button', { name: 'Randomize Data' })
+            expect(button).toBeInTheDocument()
+        })
+
+        await step('displays recent events container', async () => {
+            const heading = await canvas.findByText('Recent Events')
+            expect(heading).toBeInTheDocument()
+        })
+
+        await step('enables tooltip interaction in options', async () => {
+            expect(args.options.plugins?.tooltip?.enabled).toBe(true)
+        })
     }
 }
 
-/**
- * ## Small Data
- *
- * Chart with minimal data points to test edge cases.
- *
- * ### Test Cases:
- * - ✓ Renders correctly with 2-3 data points
- * - ✓ Bar width is appropriate
- * - ✓ Spacing is visually balanced
- * - ✓ No layout issues with minimal data
- */
 export const SmallData = {
     render: (args) => ({
         components: { BarChart },
@@ -457,21 +515,32 @@ export const SmallData = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `## Small Data
+
+Stress test with just a handful of data points.`
+            }
+        }
+    },
+    play: async ({ args, step }) => {
+        await step('limits dataset to three points', async () => {
+            expect(args.data.labels.length).toBe(3)
+            expect(args.data.datasets[0].data.length).toBe(3)
+        })
+
+        await step('keeps chart responsive for minimal data', async () => {
+            expect(args.options.responsive).toBe(true)
+        })
+
+        await step('disables legend for clarity', async () => {
+            expect(args.options.plugins?.legend?.display).toBe(false)
+        })
     }
 }
 
-/**
- * ## Large Dataset
- *
- * Chart with many data points to test performance and scrolling.
- *
- * ### Test Cases:
- * - ✓ Renders 50+ data points without lag
- * - ✓ Bars remain visible and clickable
- * - ✓ Labels are readable or appropriately hidden
- * - ✓ Performance remains acceptable (60fps)
- * - ✓ Memory usage is reasonable
- */
 export const LargeDataset = {
     render: (args) => ({
         components: { BarChart },
@@ -507,20 +576,32 @@ export const LargeDataset = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `## Large Dataset
+
+Demonstrates behaviour with fifty data points and condensed labelling.`
+            }
+        }
+    },
+    play: async ({ args, step }) => {
+        await step('generates fifty labels and values', async () => {
+            expect(args.data.labels.length).toBe(50)
+            expect(args.data.datasets[0].data.length).toBe(50)
+        })
+
+        await step('hides dense x-axis tick labels', async () => {
+            expect(args.options.scales?.x?.ticks?.display).toBe(false)
+        })
+
+        await step('keeps chart responsive for large datasets', async () => {
+            expect(args.options.responsive).toBe(true)
+        })
     }
 }
 
-/**
- * ## Empty State
- *
- * Handling empty or no data gracefully.
- *
- * ### Test Cases:
- * - ✓ No errors thrown with empty data
- * - ✓ Axes still render correctly
- * - ✓ Chart container maintains size
- * - ✓ Grid lines visible if enabled
- */
 export const EmptyState = {
     render: (args) => ({
         components: { BarChart },
@@ -554,20 +635,31 @@ export const EmptyState = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `## Empty State
+
+Gracefully renders when all values are zero.`
+            }
+        }
+    },
+    play: async ({ args, step }) => {
+        await step('uses zeroed dataset', async () => {
+            expect(args.data.datasets[0].data.every((value) => value === 0)).toBe(true)
+        })
+
+        await step('keeps axes configured', async () => {
+            expect(args.options.scales?.y?.beginAtZero).toBe(true)
+        })
+
+        await step('hides legend to reduce noise', async () => {
+            expect(args.options.plugins?.legend?.display).toBe(false)
+        })
     }
 }
 
-/**
- * ## Negative Values
- *
- * Chart supporting both positive and negative values.
- *
- * ### Test Cases:
- * - ✓ Negative values render below zero line
- * - ✓ Y-axis includes negative range
- * - ✓ Zero line is emphasized
- * - ✓ Tooltips show negative values correctly
- */
 export const NegativeValues = {
     render: (args) => ({
         components: { BarChart },
@@ -601,20 +693,31 @@ export const NegativeValues = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `## Negative Values
+
+Highlights profit and loss scenarios with values above and below zero.`
+            }
+        }
+    },
+    play: async ({ args, step }) => {
+        await step('includes negative values', async () => {
+            expect(args.data.datasets[0].data.some((value) => value < 0)).toBe(true)
+        })
+
+        await step('allows negative range on y-axis', async () => {
+            expect(args.options.scales?.y?.beginAtZero).toBe(false)
+        })
+
+        await step('keeps responsive behaviour', async () => {
+            expect(args.options.responsive).toBe(true)
+        })
     }
 }
 
-/**
- * ## Fixed Size
- *
- * Non-responsive chart with fixed dimensions.
- *
- * ### Test Cases:
- * - ✓ Chart maintains fixed size
- * - ✓ Does not respond to container resize
- * - ✓ Specified width and height are respected
- * - ✓ Maintains aspect ratio
- */
 export const FixedSize = {
     render: (args) => ({
         components: { BarChart },
@@ -640,21 +743,32 @@ export const FixedSize = {
             responsive: false,
             maintainAspectRatio: true
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `## Fixed Size
+
+Demonstrates a non-responsive chart with explicit dimensions.`
+            }
+        }
+    },
+    play: async ({ args, step }) => {
+        await step('applies explicit width and height', async () => {
+            expect(args.width).toBe(600)
+            expect(args.height).toBe(400)
+        })
+
+        await step('disables responsive behaviour', async () => {
+            expect(args.options.responsive).toBe(false)
+        })
+
+        await step('preserves aspect ratio', async () => {
+            expect(args.options.maintainAspectRatio).toBe(true)
+        })
     }
 }
 
-/**
- * ## With Loading Spinner
- *
- * Demonstrates the loading spinner during initial render and simulated data loading.
- *
- * ### Test Cases:
- * - ✓ Loading spinner shows on mount
- * - ✓ Spinner hides after data loads
- * - ✓ Custom loading message displays
- * - ✓ Spinner appears during data refresh
- * - ✓ Smooth transitions between loading states
- */
 export const WithLoadingSpinner = {
     render: (args) => ({
         components: { BarChart },
@@ -728,5 +842,31 @@ export const WithLoadingSpinner = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `## With Loading Spinner
+
+Illustrates loading states with a spinner, placeholder messaging, and manual reload control.`
+            }
+        }
+    },
+    play: async ({ canvasElement, args, step }) => {
+        const canvas = within(canvasElement)
+
+        await step('renders reload button', async () => {
+            const button = await canvas.findByRole('button', { name: 'Reload Data' })
+            expect(button).toBeInTheDocument()
+        })
+
+        await step('shows placeholder while data is loading', async () => {
+            const placeholder = await canvas.findByText('Click "Reload Data" to load chart')
+            expect(placeholder).toBeInTheDocument()
+        })
+
+        await step('disables legend during loading showcase', async () => {
+            expect(args.options.plugins?.legend?.display).toBe(false)
+        })
     }
 }

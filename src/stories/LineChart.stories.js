@@ -1,53 +1,56 @@
 import { computed, onMounted, ref } from 'vue'
 import LineChart from '../components/charts/LineChart.vue'
 
-/**
- * # LineChart Component
- *
- * A fully responsive and customisable line chart component for Vue 3 with optional area fills.
- * Perfect for showing trends, time series data, and continuous data visualization.
- *
- * ## Features
- * - **Smooth Lines**: Configurable tension for curved or straight lines
- * - **Area Fills**: Optional gradient-like fills beneath lines
- * - **Interactive Points**: Hover tooltips and click events
- * - **Multiple Lines**: Compare multiple datasets on the same chart
- * - **Customisable**: Full control over colours, line styles, and point appearance
- *
- * ## Installation
- * ```js
- * import { LineChart } from '@vue-charts/core'
- * import '@vue-charts/core/style.css'
- * ```
- *
- * ## Basic Usage
- * ```vue
- * <template>
- *   <line-chart :data="chartData" :options="chartOptions" />
- * </template>
- *
- * <script setup>
- * import { LineChart } from '@vue-charts/core'
- *
- * const chartData = {
- *   labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
- *   datasets: [{
- *     label: 'Sales',
- *     data: [30, 45, 35, 55, 50, 65],
- *     borderColor: '#3b82f6',
- *     backgroundColor: '#3b82f6',
- *     fill: true,
- *     tension: 0.4
- *   }]
- * }
- * </script>
- * ```
- */
 export default {
     title: 'Charts/LineChart',
     component: LineChart,
     parameters: {
-        layout: 'padded'
+        layout: 'padded',
+        docs: {
+            description: {
+                component: `# LineChart Component
+
+A fully responsive and customisable line chart component for Vue 3 with optional area fills.
+Perfect for showing trends, time series data, and continuous data visualisation.
+
+## Features
+- **Smooth Lines**: Configurable tension for curved or straight lines
+- **Area Fills**: Optional gradient-like fills beneath lines
+- **Interactive Points**: Hover tooltips and click events
+- **Multiple Lines**: Compare multiple datasets on the same chart
+- **Customisable**: Full control over colours, line styles, and point appearance
+
+## Installation
+\`\`\`js
+import { LineChart } from '@vue-charts/core'
+import '@vue-charts/core/style.css'
+\`\`\`
+
+## Basic Usage
+\`\`\`vue
+<template>
+  <line-chart :data="chartData" :options="chartOptions" />
+</template>
+
+<script setup>
+import { LineChart } from '@vue-charts/core'
+
+const chartData = {
+  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+  datasets: [{
+    label: 'Sales',
+    data: [30, 45, 35, 55, 50, 65],
+    borderColor: '#3b82f6',
+    backgroundColor: '#3b82f6',
+    fill: true,
+    tension: 0.4
+  }]
+}
+</script>
+\`\`\`
+`
+            }
+        }
     },
     argTypes: {
         data: {
@@ -65,9 +68,6 @@ export default {
     }
 }
 
-/**
- * Default Story - Basic line chart with area fill
- */
 export const Default = {
     render: (args) => ({
         components: { LineChart },
@@ -109,12 +109,16 @@ export const Default = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Basic line chart with a soft area fill and legend.'
+            }
+        }
     }
 }
 
-/**
- * Multiple Lines - Compare multiple datasets
- */
 export const MultipleLines = {
     render: (args) => ({
         components: { LineChart },
@@ -173,12 +177,16 @@ export const MultipleLines = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Compare multiple lines to visualise revenue trends across years.'
+            }
+        }
     }
 }
 
-/**
- * Straight Lines - No smoothing
- */
 export const StraightLines = {
     render: (args) => ({
         components: { LineChart },
@@ -214,12 +222,16 @@ export const StraightLines = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Straight line rendering with tension disabled for a stepped appearance.'
+            }
+        }
     }
 }
 
-/**
- * With Area Fills - Multiple filled areas
- */
 export const WithAreaFills = {
     render: (args) => ({
         components: { LineChart },
@@ -267,12 +279,16 @@ export const WithAreaFills = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Multiple filled area series to compare page views and unique visitors across the week.'
+            }
+        }
     }
 }
 
-/**
- * Dashed Lines - Using borderDash
- */
 export const DashedLines = {
     render: (args) => ({
         components: { LineChart },
@@ -317,12 +333,16 @@ export const DashedLines = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Compares actual and projected values using solid and dashed line styles.'
+            }
+        }
     }
 }
 
-/**
- * No Points - Hide data points
- */
 export const NoPoints = {
     render: (args) => ({
         components: { LineChart },
@@ -359,12 +379,16 @@ export const NoPoints = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Removes visible point markers for a cleaner temperature trend line.'
+            }
+        }
     }
 }
 
-/**
- * No Grid Lines - Clean minimal look
- */
 export const NoGridLines = {
     render: (args) => ({
         components: { LineChart },
@@ -408,12 +432,16 @@ export const NoGridLines = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Minimal configuration without grid lines while keeping axes readable.'
+            }
+        }
     }
 }
 
-/**
- * Interactive - Click events and dynamic data
- */
 export const Interactive = {
     render: (args) => ({
         components: { LineChart },
@@ -499,12 +527,16 @@ export const Interactive = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Interactive example with click events, data randomisation, and an event feed.'
+            }
+        }
     }
 }
 
-/**
- * Stock Chart - Time series with many data points
- */
 export const StockChart = {
     render: (args) => ({
         components: { LineChart },
@@ -548,12 +580,16 @@ export const StockChart = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Time-series stock view with thirty generated points and condensed axis labels.'
+            }
+        }
     }
 }
 
-/**
- * With Loading Spinner
- */
 export const WithLoadingSpinner = {
     render: (args) => ({
         components: { LineChart },
@@ -630,12 +666,16 @@ export const WithLoadingSpinner = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Illustrates async loading states with a reload button and loading message.'
+            }
+        }
     }
 }
 
-/**
- * Advanced Interactive - ApexCharts-style area chart with multiple series
- */
 export const AdvancedInteractive = {
     render: () => ({
         components: { LineChart },
@@ -856,5 +896,12 @@ export const AdvancedInteractive = {
                 </div>
             </div>
         `
-    })
+    }),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Advanced dashboard-style interaction with grid toggles, point controls, and zoom reset.'
+            }
+        }
+    }
 }
