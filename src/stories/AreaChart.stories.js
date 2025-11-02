@@ -7,9 +7,7 @@ export default {
         layout: 'padded',
         docs: {
             description: {
-                component: `# AreaChart Component
-
-An advanced area chart component with range selector and flush x-axis labels.
+                component: `An advanced area chart component with range selector and flush x-axis labels.
 Perfect for time series data visualization with interactive zoom and pan capabilities.
 
 ## Features

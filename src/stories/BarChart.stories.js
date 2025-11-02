@@ -1,4 +1,4 @@
-import { expect, within } from '@storybook/test'
+import { expect } from 'storybook/test'
 import { onMounted, ref } from 'vue'
 import BarChart from '../components/charts/BarChart.vue'
 
@@ -9,9 +9,7 @@ export default {
         layout: 'padded',
         docs: {
             description: {
-                component: `# BarChart Component
-
-A fully responsive and customisable bar chart component for Vue 3.
+                component: `A fully responsive and customisable bar chart component.
 
 ## Features
 - **Responsive**: Automatically adapts to container size
@@ -227,7 +225,7 @@ Compare multiple data series side by side for year-over-year or category analysi
     },
     play: async ({ args, step }) => {
         await step('renders multiple datasets', async () => {
-            expect(args.data.datasets.length).toBeGreaterThan(1)
+            await expect(args.data.datasets.length).toBeGreaterThan(1)
         })
 
         await step('keeps dataset lengths aligned with labels', async () => {
@@ -468,17 +466,15 @@ Demonstrates click events, dynamic data updates, and a recent activity panel.`
             }
         }
     },
-    play: async ({ canvasElement, args, step }) => {
-        const canvas = within(canvasElement)
-
+    play: async ({ canvas, args, step }) => {
         await step('shows randomise data control', async () => {
-            const button = await canvas.findByRole('button', { name: 'Randomize Data' })
-            expect(button).toBeInTheDocument()
+            const button = canvas.getByRole('button', { name: 'Randomize Data' })
+            await expect(button).toBeInTheDocument()
         })
 
         await step('displays recent events container', async () => {
-            const heading = await canvas.findByText('Recent Events')
-            expect(heading).toBeInTheDocument()
+            const heading = canvas.getByText('Recent Events')
+            await expect(heading).toBeInTheDocument()
         })
 
         await step('enables tooltip interaction in options', async () => {
@@ -852,17 +848,15 @@ Illustrates loading states with a spinner, placeholder messaging, and manual rel
             }
         }
     },
-    play: async ({ canvasElement, args, step }) => {
-        const canvas = within(canvasElement)
-
+    play: async ({ canvas, args, step }) => {
         await step('renders reload button', async () => {
-            const button = await canvas.findByRole('button', { name: 'Reload Data' })
-            expect(button).toBeInTheDocument()
+            const button = canvas.getByRole('button', { name: 'Reload Data' })
+            await expect(button).toBeInTheDocument()
         })
 
         await step('shows placeholder while data is loading', async () => {
-            const placeholder = await canvas.findByText('Click "Reload Data" to load chart')
-            expect(placeholder).toBeInTheDocument()
+            const placeholder = canvas.getByText('Click "Reload Data" to load chart')
+            await expect(placeholder).toBeInTheDocument()
         })
 
         await step('disables legend during loading showcase', async () => {
