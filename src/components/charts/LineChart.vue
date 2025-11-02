@@ -1,5 +1,5 @@
 <template>
-    <BaseChart
+    <base-chart
         :data="data"
         :height="height"
         :options="options"
@@ -49,86 +49,86 @@
 
             <!-- Chart Content -->
             <g v-else>
-            <!-- Y Axis -->
-            <ChartAxis
-                v-if="scales.y?.display !== false"
-                :chart-area="chartArea"
-                :show-grid="scales.y?.grid?.display !== false"
-                :show-labels="scales.y?.ticks?.display !== false"
-                :show-line="true"
-                :show-ticks="scales.y?.ticks?.display !== false"
-                :ticks="getYAxisTicks(chartArea)"
-                axis="y"
-            />
+                <!-- Y Axis -->
+                <chart-axis
+                    v-if="scales.y?.display !== false"
+                    :chart-area="chartArea"
+                    :show-grid="scales.y?.grid?.display !== false"
+                    :show-labels="scales.y?.ticks?.display !== false"
+                    :show-line="true"
+                    :show-ticks="scales.y?.ticks?.display !== false"
+                    :ticks="getYAxisTicks(chartArea)"
+                    axis="y"
+                />
 
-            <!-- X Axis -->
-            <ChartAxis
-                v-if="scales.x?.display !== false"
-                :chart-area="chartArea"
-                :show-grid="scales.x?.grid?.display !== false"
-                :show-labels="scales.x?.ticks?.display !== false"
-                :show-line="true"
-                :show-ticks="scales.x?.ticks?.display !== false"
-                :ticks="getXAxisTicks(chartArea)"
-                axis="x"
-            />
+                <!-- X Axis -->
+                <chart-axis
+                    v-if="scales.x?.display !== false"
+                    :chart-area="chartArea"
+                    :show-grid="scales.x?.grid?.display !== false"
+                    :show-labels="scales.x?.ticks?.display !== false"
+                    :show-line="true"
+                    :show-ticks="scales.x?.ticks?.display !== false"
+                    :ticks="getXAxisTicks(chartArea)"
+                    axis="x"
+                />
 
-            <!-- Lines with Area Fills -->
-            <g class="lines-group">
-                <g
-                    v-for="(dataset, datasetIndex) in visibleDatasets"
-                    :key="datasetIndex"
-                    :class="`dataset-${datasetIndex}`"
-                >
-                    <!-- Area Fill -->
-                    <path
-                        v-if="dataset.fill"
-                        :d="getAreaPath(dataset, datasetIndex, chartArea)"
-                        :fill="dataset.backgroundColor || dataset.borderColor"
-                        :opacity="dataset.fillOpacity || 0.2"
-                        class="line-area transition-opacity duration-200 ease-linear"
-                    />
-
-                    <!-- Line Path -->
-                    <path
-                        :class="{ 'cursor-pointer': isInteractive, 'line-path-interactive-hover': isInteractive }"
-                        :d="getLinePath(dataset, datasetIndex, chartArea)"
-                        :stroke="dataset.borderColor"
-                        :stroke-dasharray="dataset.borderDash?.join(',') || ''"
-                        :stroke-width="dataset.borderWidth || 2"
-                        class="line-path transition-all duration-200 ease-linear"
-                        fill="none"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-
-                    <!-- Data Points -->
+                <!-- Lines with Area Fills -->
+                <g class="lines-group">
                     <g
-                        v-if="showPoints(dataset)"
-                        class="data-points"
+                        v-for="(dataset, datasetIndex) in visibleDatasets"
+                        :key="datasetIndex"
+                        :class="`dataset-${datasetIndex}`"
                     >
-                        <circle
-                            v-for="(point, pointIndex) in getDataPoints(dataset, datasetIndex, chartArea)"
-                            :key="pointIndex"
-                            :aria-label="`${data.labels[pointIndex]}: ${point.value}`"
-                            :class="{ 'cursor-pointer data-point-interactive-hover': isInteractive }"
-                            :cx="point.x"
-                            :cy="point.y"
-                            :fill="dataset.pointBackgroundColor || dataset.backgroundColor || dataset.borderColor"
-                            :r="getPointRadius(dataset)"
-                            :stroke="dataset.pointBorderColor || dataset.borderColor"
-                            :stroke-width="dataset.pointBorderWidth || 2"
-                            class="data-point transition-all duration-200 ease-linear"
-                            role="graphics-symbol"
-                            @click="handlePointClick(pointIndex, datasetIndex, point.value)"
-                            @mouseenter="handlePointHover(pointIndex, datasetIndex, point.value, $event)"
-                            @mouseleave="handlePointLeave"
+                        <!-- Area Fill -->
+                        <path
+                            v-if="dataset.fill"
+                            :d="getAreaPath(dataset, datasetIndex, chartArea)"
+                            :fill="dataset.backgroundColor || dataset.borderColor"
+                            :opacity="dataset.fillOpacity || 0.2"
+                            class="line-area transition-opacity duration-200 ease-linear"
+                        />
+
+                        <!-- Line Path -->
+                        <path
+                            :class="{ 'cursor-pointer': isInteractive, 'line-path-interactive-hover': isInteractive }"
+                            :d="getLinePath(dataset, datasetIndex, chartArea)"
+                            :stroke="dataset.borderColor"
+                            :stroke-dasharray="dataset.borderDash?.join(',') || ''"
+                            :stroke-width="dataset.borderWidth || 2"
+                            class="line-path transition-all duration-200 ease-linear"
+                            fill="none"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+
+                        <!-- Data Points -->
+                        <g
+                            v-if="showPoints(dataset)"
+                            class="data-points"
                         >
-                            <title>{{ data.labels[pointIndex] }}: {{ point.value }}</title>
-                        </circle>
+                            <circle
+                                v-for="(point, pointIndex) in getDataPoints(dataset, datasetIndex, chartArea)"
+                                :key="pointIndex"
+                                :aria-label="`${data.labels[pointIndex]}: ${point.value}`"
+                                :class="{ 'cursor-pointer data-point-interactive-hover': isInteractive }"
+                                :cx="point.x"
+                                :cy="point.y"
+                                :fill="dataset.pointBackgroundColor || dataset.backgroundColor || dataset.borderColor"
+                                :r="getPointRadius(dataset)"
+                                :stroke="dataset.pointBorderColor || dataset.borderColor"
+                                :stroke-width="dataset.pointBorderWidth || 2"
+                                class="data-point transition-all duration-200 ease-linear"
+                                role="graphics-symbol"
+                                @click="handlePointClick(pointIndex, datasetIndex, point.value)"
+                                @mouseenter="handlePointHover(pointIndex, datasetIndex, point.value, $event)"
+                                @mouseleave="handlePointLeave"
+                            >
+                                <title>{{ data.labels[pointIndex] }}: {{ point.value }}</title>
+                            </circle>
+                        </g>
                     </g>
                 </g>
-            </g>
             </g>
 
             <!-- Tooltip -->
@@ -140,9 +140,9 @@
             />
         </template>
         <template #additional_controls>
-            <slot name="additional_controls" />
+            <slot name="additional_controls"></slot>
         </template>
-    </BaseChart>
+    </base-chart>
 </template>
 
 <script setup>

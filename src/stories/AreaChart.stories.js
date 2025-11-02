@@ -101,7 +101,7 @@ export const Default = {
             },
             plugins: {
                 legend: {
-                    display: false,
+                    display: false
                 }
             }
         },

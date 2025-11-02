@@ -1,4 +1,3 @@
-import { computed } from 'vue'
 import { calculateBarWidth as calculateBarWidthUtil } from '@/utils/chartCalculations.js'
 
 /**

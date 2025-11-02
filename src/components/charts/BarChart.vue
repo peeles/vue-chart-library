@@ -49,59 +49,59 @@
 
             <!-- Chart Content -->
             <g v-else>
-            <!-- Y Axis -->
-            <chart-axis
-                v-if="scales.y?.display !== false"
-                axis="y"
-                :ticks="getYAxisTicks(chartArea)"
-                :chart-area="chartArea"
-                :show-grid="scales.y?.grid?.display !== false"
-                :show-line="true"
-                :show-ticks="scales.y?.ticks?.display !== false"
-                :show-labels="scales.y?.ticks?.display !== false"
-            />
+                <!-- Y Axis -->
+                <chart-axis
+                    v-if="scales.y?.display !== false"
+                    axis="y"
+                    :ticks="getYAxisTicks(chartArea)"
+                    :chart-area="chartArea"
+                    :show-grid="scales.y?.grid?.display !== false"
+                    :show-line="true"
+                    :show-ticks="scales.y?.ticks?.display !== false"
+                    :show-labels="scales.y?.ticks?.display !== false"
+                />
 
-            <!-- X Axis -->
-            <chart-axis
-                v-if="scales.x?.display !== false"
-                axis="x"
-                :ticks="getXAxisTicks(chartArea)"
-                :chart-area="chartArea"
-                :show-grid="scales.x?.grid?.display !== false"
-                :show-line="true"
-                :show-ticks="scales.x?.ticks?.display !== false"
-                :show-labels="scales.x?.ticks?.display !== false"
-            />
+                <!-- X Axis -->
+                <chart-axis
+                    v-if="scales.x?.display !== false"
+                    axis="x"
+                    :ticks="getXAxisTicks(chartArea)"
+                    :chart-area="chartArea"
+                    :show-grid="scales.x?.grid?.display !== false"
+                    :show-line="true"
+                    :show-ticks="scales.x?.ticks?.display !== false"
+                    :show-labels="scales.x?.ticks?.display !== false"
+                />
 
-            <!-- Bars -->
-            <g class="bars-group">
-                <g
-                    v-for="(dataset, datasetIndex) in visibleDatasets"
-                    :key="datasetIndex"
-                    :class="`dataset-${datasetIndex}`"
-                >
-                    <rect
-                        v-for="(value, index) in dataset.data"
-                        :key="index"
-                        :x="getBarX(index, datasetIndex, chartArea)"
-                        :y="valueToY(value, chartArea)"
-                        :width="getBarWidth(chartArea)"
-                        :height="valueToHeight(value, chartArea)"
-                        :fill="dataset.backgroundColor"
-                        :stroke="dataset.borderColor"
-                        :stroke-width="dataset.borderWidth"
-                        class="bar transition-all duration-300"
-                        :class="{ 'cursor-pointer bar-interactive-hover': isInteractive }"
-                        @mouseenter="handleBarHover(index, datasetIndex, $event)"
-                        @mouseleave="handleBarLeave"
-                        @click="handleBarClick(index, datasetIndex, value)"
-                        role="graphics-symbol"
-                        :aria-label="`${data.labels[index]}: ${value}`"
+                <!-- Bars -->
+                <g class="bars-group">
+                    <g
+                        v-for="(dataset, datasetIndex) in visibleDatasets"
+                        :key="datasetIndex"
+                        :class="`dataset-${datasetIndex}`"
                     >
-                        <title>{{ data.labels[index] }}: {{ value }}</title>
-                    </rect>
+                        <rect
+                            v-for="(value, index) in dataset.data"
+                            :key="index"
+                            :x="getBarX(index, datasetIndex, chartArea)"
+                            :y="valueToY(value, chartArea)"
+                            :width="getBarWidth(chartArea)"
+                            :height="valueToHeight(value, chartArea)"
+                            :fill="dataset.backgroundColor"
+                            :stroke="dataset.borderColor"
+                            :stroke-width="dataset.borderWidth"
+                            class="bar transition-all duration-300"
+                            :class="{ 'cursor-pointer bar-interactive-hover': isInteractive }"
+                            @mouseenter="handleBarHover(index, datasetIndex, $event)"
+                            @mouseleave="handleBarLeave"
+                            @click="handleBarClick(index, datasetIndex, value)"
+                            role="graphics-symbol"
+                            :aria-label="`${data.labels[index]}: ${value}`"
+                        >
+                            <title>{{ data.labels[index] }}: {{ value }}</title>
+                        </rect>
+                    </g>
                 </g>
-            </g>
             </g>
 
             <!-- Tooltip -->

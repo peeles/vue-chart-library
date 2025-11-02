@@ -49,59 +49,59 @@
 
             <!-- Chart Content -->
             <g v-else>
-            <!-- Y Axis -->
-            <chart-axis
-                v-if="scales.y?.display !== false"
-                :chart-area="chartArea"
-                :show-grid="scales.y?.grid?.display !== false"
-                :show-labels="scales.y?.ticks?.display !== false"
-                :show-line="true"
-                :show-ticks="scales.y?.ticks?.display !== false"
-                :ticks="getYAxisTicks(chartArea)"
-                axis="y"
-            />
+                <!-- Y Axis -->
+                <chart-axis
+                    v-if="scales.y?.display !== false"
+                    :chart-area="chartArea"
+                    :show-grid="scales.y?.grid?.display !== false"
+                    :show-labels="scales.y?.ticks?.display !== false"
+                    :show-line="true"
+                    :show-ticks="scales.y?.ticks?.display !== false"
+                    :ticks="getYAxisTicks(chartArea)"
+                    axis="y"
+                />
 
-            <!-- X Axis -->
-            <chart-axis
-                v-if="scales.x?.display !== false"
-                :chart-area="chartArea"
-                :show-grid="scales.x?.grid?.display !== false"
-                :show-labels="scales.x?.ticks?.display !== false"
-                :show-line="true"
-                :show-ticks="scales.x?.ticks?.display !== false"
-                :ticks="getXAxisTicks(chartArea)"
-                axis="x"
-            />
+                <!-- X Axis -->
+                <chart-axis
+                    v-if="scales.x?.display !== false"
+                    :chart-area="chartArea"
+                    :show-grid="scales.x?.grid?.display !== false"
+                    :show-labels="scales.x?.ticks?.display !== false"
+                    :show-line="true"
+                    :show-ticks="scales.x?.ticks?.display !== false"
+                    :ticks="getXAxisTicks(chartArea)"
+                    axis="x"
+                />
 
-            <!-- Stacked Bars -->
-            <g class="stacked-bars-group">
-                <g
-                    v-for="(labelGroup, labelIndex) in getStackedBarsForRender(chartArea)"
-                    :key="labelIndex"
-                    :class="`label-group-${labelIndex}`"
-                >
-                    <rect
-                        v-for="(bar, datasetIndex) in labelGroup"
-                        :key="datasetIndex"
-                        :aria-label="`${data.labels[labelIndex]}: ${bar.dataset.label} - ${bar.value}`"
-                        :class="{ 'cursor-pointer stacked-bar-interactive-hover': isInteractive }"
-                        :fill="bar.color"
-                        :height="bar.height"
-                        :stroke="bar.borderColor"
-                        :stroke-width="bar.borderWidth"
-                        :width="bar.width"
-                        :x="bar.x"
-                        :y="bar.y"
-                        class="stacked-bar transition-opacity duration-200 ease-linear"
-                        role="graphics-symbol"
-                        @click="handleBarClick(labelIndex, datasetIndex, bar.value)"
-                        @mouseenter="handleBarHover(labelIndex, datasetIndex, bar.value, $event)"
-                        @mouseleave="handleBarLeave"
+                <!-- Stacked Bars -->
+                <g class="stacked-bars-group">
+                    <g
+                        v-for="(labelGroup, labelIndex) in getStackedBarsForRender(chartArea)"
+                        :key="labelIndex"
+                        :class="`label-group-${labelIndex}`"
                     >
-                        <title>{{ data.labels[labelIndex] }}: {{ bar.dataset.label }} - {{ bar.value }}</title>
-                    </rect>
+                        <rect
+                            v-for="(bar, datasetIndex) in labelGroup"
+                            :key="datasetIndex"
+                            :aria-label="`${data.labels[labelIndex]}: ${bar.dataset.label} - ${bar.value}`"
+                            :class="{ 'cursor-pointer stacked-bar-interactive-hover': isInteractive }"
+                            :fill="bar.color"
+                            :height="bar.height"
+                            :stroke="bar.borderColor"
+                            :stroke-width="bar.borderWidth"
+                            :width="bar.width"
+                            :x="bar.x"
+                            :y="bar.y"
+                            class="stacked-bar transition-opacity duration-200 ease-linear"
+                            role="graphics-symbol"
+                            @click="handleBarClick(labelIndex, datasetIndex, bar.value)"
+                            @mouseenter="handleBarHover(labelIndex, datasetIndex, bar.value, $event)"
+                            @mouseleave="handleBarLeave"
+                        >
+                            <title>{{ data.labels[labelIndex] }}: {{ bar.dataset.label }} - {{ bar.value }}</title>
+                        </rect>
+                    </g>
                 </g>
-            </g>
             </g>
 
             <!-- Tooltip -->

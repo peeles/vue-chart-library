@@ -1,6 +1,6 @@
 <template>
     <div class="relative flex flex-col gap-4 w-full">
-        <LineChart
+        <line-chart
             :data="visibleData"
             :height="height"
             :options="chartOptions"
@@ -70,7 +70,7 @@
                     </div>
                 </div>
             </template>
-        </LineChart>
+        </line-chart>
     </div>
 </template>
 
@@ -186,7 +186,7 @@ const chartOptions = computed(() => {
                 ...config.value.scales?.x,
                 type: 'category',
                 position: 'bottom',
-                flush: true,
+                flush: true
             }
         }
     }

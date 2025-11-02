@@ -156,7 +156,6 @@
                     </text>
                 </g>
             </g>
-            </g>
 
             <!-- Tooltip -->
             <chart-tooltip
