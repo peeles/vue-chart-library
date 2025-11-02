@@ -82,7 +82,7 @@ import { useChartConfig } from '@/composables/useChartConfig.js'
 import { useChartData } from '@/composables/useChartData.js'
 import { useChartScale } from '@/composables/useChartScale.js'
 import { useDatasetVisibility } from '@/composables/useDatasetVisibility.js'
-import { calculateBarWidth } from '@/utils/chartCalculations.js'
+import { useBarDimensions } from '@/composables/useBarDimensions.js'
 
 const props = defineProps({
     /**
@@ -141,6 +141,14 @@ const {
     valueToHeight
 } = useChartScale(visibleDatasets, computed(() => ({ stacked: true })), scales)
 
+// Use bar dimensions composable
+const { getBarWidth, getBarX } = useBarDimensions({
+    labels,
+    visibleDatasets,
+    gapRatio: 0.3,
+    stacked: true
+})
+
 const isInteractive = computed(() => {
     return config.value.plugins?.tooltip?.enabled !== false
 })
@@ -189,10 +197,9 @@ function calculateBarDimensions(labelIndex, bar, chartArea) {
     const labelCount = labels.value.length
     if (labelCount === 0) return { x: 0, y: 0, width: 0, height: 0 }
 
-    const groupWidth = chartArea.width / labelCount
-    const barWidth = calculateBarWidth(groupWidth, 1, 0.3) // Single bar per label
-    const groupStart = chartArea.x + groupWidth * labelIndex
-    const x = groupStart + (groupWidth - barWidth) / 2
+    // Use composable functions for x position and width
+    const x = getBarX(labelIndex, 0, chartArea) // datasetIndex 0 for stacked
+    const barWidth = getBarWidth(chartArea)
 
     // Calculate Y position based on cumulative value
     const stackTop = bar.cumulativeValue + bar.value

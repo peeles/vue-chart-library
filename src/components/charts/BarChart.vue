@@ -82,7 +82,7 @@ import { useChartConfig } from '@/composables/useChartConfig.js'
 import { useChartData } from '@/composables/useChartData.js'
 import { useChartScale } from '@/composables/useChartScale.js'
 import { useDatasetVisibility } from '@/composables/useDatasetVisibility.js'
-import { calculateBarWidth } from '@/utils/chartCalculations.js'
+import { useBarDimensions } from '@/composables/useBarDimensions.js'
 
 const props = defineProps({
     /**
@@ -141,6 +141,14 @@ const {
     valueToHeight
 } = useChartScale(visibleDatasets, computed(() => ({})), scales)
 
+// Use bar dimensions composable
+const { getBarWidth, getBarX } = useBarDimensions({
+    labels,
+    visibleDatasets,
+    gapRatio: 0.2,
+    stacked: false
+})
+
 const isInteractive = computed(() => {
     return config.value.plugins?.tooltip?.enabled !== false
 })
@@ -152,29 +160,6 @@ function getYAxisTicks(chartArea) {
 
 function getXAxisTicks(chartArea) {
     return generateXAxisTicks(chartArea, labels.value)
-}
-
-// Calculate bar width
-function getBarWidth(chartArea) {
-    const datasetCount = visibleDatasets.value.length
-    const labelCount = labels.value.length
-    if (labelCount === 0) return 0
-
-    const groupWidth = chartArea.width / labelCount
-    return calculateBarWidth(groupWidth, datasetCount, 0.2)
-}
-
-// Bar positioning
-function getBarX(labelIndex, datasetIndex, chartArea) {
-    const labelCount = labels.value.length
-    const datasetCount = visibleDatasets.value.length
-    if (labelCount === 0) return 0
-
-    const groupWidth = chartArea.width / labelCount
-    const groupStart = chartArea.x + groupWidth * labelIndex
-    const barW = getBarWidth(chartArea)
-
-    return groupStart + (barW * datasetIndex) + (groupWidth - (barW * datasetCount)) / 2
 }
 
 // Event handlers
