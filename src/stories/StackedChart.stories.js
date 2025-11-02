@@ -1,50 +1,52 @@
 import { ref, onMounted } from 'vue'
 import StackedChart from '../components/charts/StackedChart.vue'
 
-/**
- * # StackedChart Component
- *
- * A fully responsive and customisable stacked bar chart component for Vue 3.
- * Perfect for showing composition and comparing parts of a whole across categories.
- *
- * ## Features
- * - **Responsive**: Automatically adapts to container size
- * - **Interactive**: Hover tooltips and click events
- * - **Customisable**: Full control over colours, spacing, and appearance
- * - **Accessible**: ARIA labels and keyboard navigation
- * - **Stacked Values**: Shows how multiple datasets combine
- *
- * ## Installation
- * ```js
- * import { StackedChart } from '@vue-charts/core'
- * import '@vue-charts/core/style.css'
- * ```
- *
- * ## Basic Usage
- * ```vue
- * <template>
- *   <stacked-chart :data="chartData" :options="chartOptions" />
- * </template>
- *
- * <script setup>
- * import { StackedChart } from '@vue-charts/core'
- *
- * const chartData = {
- *   labels: ['Q1', 'Q2', 'Q3', 'Q4'],
- *   datasets: [
- *     { label: 'Product A', data: [30, 40, 35, 50], backgroundColor: '#3b82f6' },
- *     { label: 'Product B', data: [20, 30, 25, 35], backgroundColor: '#8b5cf6' },
- *     { label: 'Product C', data: [15, 20, 18, 25], backgroundColor: '#10b981' }
- *   ]
- * }
- * </script>
- * ```
- */
 export default {
     title: 'Charts/StackedChart',
     component: StackedChart,
     parameters: {
-        layout: 'padded'
+        layout: 'padded',
+        docs: {
+            description: {
+                component: `# StackedChart Component
+
+A responsive stacked bar chart component for visualising composition across categories.
+
+## Features
+- **Responsive**: Automatically adapts to container size
+- **Interactive**: Hover tooltips and click events
+- **Customisable**: Full control over colours, spacing, and appearance
+- **Accessible**: ARIA labels and keyboard navigation
+- **Stacked Values**: Visualise how multiple datasets combine
+
+## Installation
+\`\`\`js
+import { StackedChart } from '@vue-charts/core'
+import '@vue-charts/core/style.css'
+\`\`\`
+
+## Basic Usage
+\`\`\`vue
+<template>
+  <stacked-chart :data="chartData" :options="chartOptions" />
+</template>
+
+<script setup>
+import { StackedChart } from '@vue-charts/core'
+
+const chartData = {
+  labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+  datasets: [
+    { label: 'Product A', data: [30, 40, 35, 50], backgroundColor: '#3b82f6' },
+    { label: 'Product B', data: [20, 30, 25, 35], backgroundColor: '#8b5cf6' },
+    { label: 'Product C', data: [15, 20, 18, 25], backgroundColor: '#10b981' }
+  ]
+}
+</script>
+\`\`\`
+`
+            }
+        }
     },
     argTypes: {
         data: {
@@ -62,9 +64,6 @@ export default {
     }
 }
 
-/**
- * Default Story - Basic stacked bar chart
- */
 export const Default = {
     render: (args) => ({
         components: { StackedChart },
@@ -119,12 +118,16 @@ export const Default = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Foundational stacked bar chart comparing three product lines per quarter.'
+            }
+        }
     }
 }
 
-/**
- * Monthly Revenue Breakdown
- */
 export const MonthlyRevenue = {
     render: (args) => ({
         components: { StackedChart },
@@ -174,12 +177,16 @@ export const MonthlyRevenue = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Monthly revenue breakdown across subscriptions, services, and products.'
+            }
+        }
     }
 }
 
-/**
- * Team Performance
- */
 export const TeamPerformance = {
     render: (args) => ({
         components: { StackedChart },
@@ -235,12 +242,16 @@ export const TeamPerformance = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Weekly team output comparison with stacked contributions per team.'
+            }
+        }
     }
 }
 
-/**
- * No Grid Lines
- */
 export const NoGridLines = {
     render: (args) => ({
         components: { StackedChart },
@@ -295,12 +306,16 @@ export const NoGridLines = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Stacked chart with grid lines disabled for a cleaner visual style.'
+            }
+        }
     }
 }
 
-/**
- * Interactive with Events
- */
 export const Interactive = {
     render: (args) => ({
         components: { StackedChart },
@@ -399,12 +414,16 @@ export const Interactive = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Interactive stacked chart with click logging and data randomisation.'
+            }
+        }
     }
 }
 
-/**
- * Many Categories
- */
 export const ManyCategories = {
     render: (args) => ({
         components: { StackedChart },
@@ -462,12 +481,16 @@ export const ManyCategories = {
                 }
             }
         }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Handles a large number of categories with stacked values and hidden x-axis ticks.'
+            }
+        }
     }
 }
 
-/**
- * With Loading Spinner
- */
 export const WithLoadingSpinner = {
     render: (args) => ({
         components: { StackedChart },
@@ -552,6 +575,13 @@ export const WithLoadingSpinner = {
                 legend: {
                     display: true
                 }
+            }
+        }
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Simulates asynchronous data loading with a stacked chart and reload button.'
             }
         }
     }

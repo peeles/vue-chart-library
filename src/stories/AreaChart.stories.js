@@ -1,28 +1,31 @@
 import AreaChart from '../components/charts/AreaChart.vue'
 
-/**
- * # AreaChart Component
- *
- * An advanced area chart component with range selector and flush x-axis labels.
- * Perfect for time series data visualization with interactive zoom and pan capabilities.
- *
- * ## Features
- * - **Range Selector**: Interactive slider to zoom into specific date ranges
- * - **Flush Labels**: X-axis labels aligned at edges for time series data
- * - **Smooth Animations**: Chart.js-style grow-from-zero animations
- * - **Multiple Series**: Compare multiple datasets with area fills
- *
- * ## Installation
- * ```js
- * import { AreaChart } from '@vue-charts/core'
- * import '@vue-charts/core/style.css'
- * ```
- */
 export default {
     title: 'Charts/AreaChart',
     component: AreaChart,
     parameters: {
-        layout: 'padded'
+        layout: 'padded',
+        docs: {
+            description: {
+                component: `# AreaChart Component
+
+An advanced area chart component with range selector and flush x-axis labels.
+Perfect for time series data visualization with interactive zoom and pan capabilities.
+
+## Features
+- **Range Selector**: Interactive slider to zoom into specific date ranges
+- **Flush Labels**: X-axis labels aligned at edges for time series data
+- **Smooth Animations**: Chart.js-style grow-from-zero animations
+- **Multiple Series**: Compare multiple datasets with area fills
+
+## Installation
+\`\`\`js
+import { AreaChart } from '@vue-charts/core'
+import '@vue-charts/core/style.css'
+\`\`\`
+`
+            }
+        }
     },
     argTypes: {
         data: {
@@ -40,9 +43,6 @@ export default {
     }
 }
 
-/**
- * Default - ApexCharts-style area chart with range selector
- */
 export const Default = {
     render: (args) => ({
         components: { AreaChart },
@@ -108,12 +108,16 @@ export const Default = {
             }
         },
         showRangeSelector: true
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Default ApexCharts-style area chart with range selector for interactive exploration.'
+            }
+        }
     }
 }
 
-/**
- * Without Range Selector
- */
 export const WithoutRangeSelector = {
     render: (args) => ({
         components: { AreaChart },
@@ -155,5 +159,12 @@ export const WithoutRangeSelector = {
             }
         },
         showRangeSelector: false
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Area chart without the range selector, ideal for static datasets.'
+            }
+        }
     }
 }
