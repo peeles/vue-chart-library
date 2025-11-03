@@ -86,17 +86,17 @@
                             :d="getAreaPath(dataset, datasetIndex, chartArea)"
                             :fill="dataset.backgroundColor || dataset.borderColor"
                             :opacity="dataset.fillOpacity || 0.2"
-                            class="line-area transition-opacity duration-200 ease-linear"
+                            class="chart-line-area transition-opacity duration-200 ease-linear"
                         />
 
                         <!-- Line Path -->
                         <path
-                            :class="{ 'cursor-pointer': isInteractive, 'line-path-interactive-hover': isInteractive }"
+                            :class="{ 'cursor-pointer': isInteractive, 'chart-line-path-interactive-hover': isInteractive }"
                             :d="getLinePath(dataset, datasetIndex, chartArea)"
                             :stroke="dataset.borderColor"
                             :stroke-dasharray="dataset.borderDash?.join(',') || ''"
                             :stroke-width="dataset.borderWidth || 2"
-                            class="line-path transition-all duration-200 ease-linear"
+                            class="chart-line-path transition-all duration-200 ease-linear"
                             fill="none"
                             stroke-linecap="round"
                             stroke-linejoin="round"
@@ -111,14 +111,14 @@
                                 v-for="(point, pointIndex) in getDataPoints(dataset, datasetIndex, chartArea)"
                                 :key="pointIndex"
                                 :aria-label="`${data.labels[pointIndex]}: ${point.value}`"
-                                :class="{ 'cursor-pointer data-point-interactive-hover': isInteractive }"
+                                :class="{ 'cursor-pointer chart-data-point-interactive-hover': isInteractive }"
                                 :cx="point.x"
                                 :cy="point.y"
                                 :fill="dataset.pointBackgroundColor || dataset.backgroundColor || dataset.borderColor"
                                 :r="getPointRadius(dataset)"
                                 :stroke="dataset.pointBorderColor || dataset.borderColor"
                                 :stroke-width="dataset.pointBorderWidth || 2"
-                                class="data-point transition-all duration-200 ease-linear"
+                                class="chart-data-point transition-all duration-200 ease-linear"
                                 role="graphics-symbol"
                                 @click="handlePointClick(pointIndex, datasetIndex, point.value)"
                                 @mouseenter="handlePointHover(pointIndex, datasetIndex, point.value, $event)"
@@ -361,57 +361,3 @@ function handleLegendToggle(event) {
 }
 </script>
 
-<style>
-/* SVG-specific animations that can't be replicated with Tailwind */
-.line-path {
-    stroke-dasharray: 3000;
-    stroke-dashoffset: 3000;
-    animation: lineDraw 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes lineDraw {
-    to {
-        stroke-dashoffset: 0;
-    }
-}
-
-.line-path-interactive-hover:hover {
-    stroke-width: 3;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-.line-area {
-    animation: areaFadeIn 0.8s ease-out 0.4s backwards;
-}
-
-@keyframes areaFadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-.data-point {
-    animation: pointFadeIn 0.6s ease-out backwards;
-}
-
-@keyframes pointFadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-.data-point-interactive-hover:hover {
-    r: 6;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-}
-
-.data-point-interactive-hover:active {
-    r: 5;
-}
-</style>

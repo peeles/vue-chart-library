@@ -60,15 +60,15 @@
                         <path
                             :aria-label="`${slice.label}: ${slice.value} (${slice.percentage.toFixed(1)}%)`"
                             :class="{
-                                'cursor-pointer pie-slice-interactive-hover': isInteractive,
-                                'pie-slice-hovered': hoveredIndex === index
+                                'cursor-pointer chart-pie-slice-interactive-hover': isInteractive,
+                                'chart-pie-slice-hovered': hoveredIndex === index
                             }"
                             :d="slice.path"
                             :fill="slice.color"
                             :stroke="slice.borderColor"
                             :stroke-width="borderWidth"
                             :transform="getSliceTransform(slice)"
-                            class="pie-slice transition-all duration-300 ease-linear cursor-default"
+                            class="chart-pie-slice transition-all duration-300 ease-linear cursor-default"
                             role="graphics-symbol"
                             @click="handleSliceClick(index, slice)"
                             @mouseenter="handleSliceHover(index, slice, $event)"
@@ -428,32 +428,3 @@ function handleLegendToggle(event) {
 }
 </script>
 
-<style>
-/* SVG-specific animations and transforms that can't be replicated with Tailwind */
-.pie-slice {
-    animation: sliceGrow 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
-    transform-origin: center;
-}
-
-@keyframes sliceGrow {
-    from {
-        transform: scale(0);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-.pie-slice-interactive-hover:hover,
-.pie-slice-hovered {
-    opacity: 0.9;
-    filter: brightness(1.1) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
-    transform: scale(1.02);
-}
-
-.pie-slice-interactive-hover:active {
-    transform: scale(0.98);
-}
-</style>

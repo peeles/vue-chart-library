@@ -90,8 +90,8 @@
                             :fill="dataset.backgroundColor"
                             :stroke="dataset.borderColor"
                             :stroke-width="dataset.borderWidth"
-                            class="bar transition-all duration-300"
-                            :class="{ 'cursor-pointer bar-interactive-hover': isInteractive }"
+                            class="chart-bar transition-all duration-300"
+                            :class="{ 'cursor-pointer chart-bar-interactive-hover': isInteractive }"
                             @mouseenter="handleBarHover(index, datasetIndex, $event)"
                             @mouseleave="handleBarLeave"
                             @click="handleBarClick(index, datasetIndex, value)"
@@ -269,33 +269,3 @@ function handleLegendToggle(event) {
 }
 </script>
 
-<style>
-/* SVG-specific animations and transforms that can't be replicated with Tailwind */
-.bar {
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
-    animation: barGrowth 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
-    transform-origin: bottom;
-}
-
-@keyframes barGrowth {
-    from {
-        transform: scaleY(0);
-        opacity: 0;
-    }
-    to {
-        transform: scaleY(1);
-        opacity: 1;
-    }
-}
-
-.bar-interactive-hover:hover {
-    opacity: 0.85;
-    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15));
-    transform: translateY(-2px) scaleY(1);
-}
-
-.bar-interactive-hover:active {
-    transform: translateY(0) scaleY(1);
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
-}
-</style>
