@@ -1,8 +1,8 @@
-import AreaChart from '../components/charts/AreaChart.vue'
+import TimelineChart from '../components/charts/TimelineChart.vue'
 
 export default {
-    title: 'Charts/AreaChart',
-    component: AreaChart,
+    title: 'Charts/TimelineChart',
+    component: TimelineChart,
     parameters: {
         layout: 'padded',
         docs: {
@@ -18,7 +18,7 @@ Perfect for time series data visualisation with interactive zoom and pan capabil
 
 ## Installation
 \`\`\`js
-import { AreaChart } from '@vue-charts/core'
+import { TimelineChart } from '@vue-charts/core'
 import '@vue-charts/core/style.css'
 \`\`\`
 `
@@ -43,7 +43,7 @@ import '@vue-charts/core/style.css'
 
 export const Default = {
     render: (args) => ({
-        components: { AreaChart },
+        components: { AreaChart: TimelineChart },
         setup() {
             return { args }
         },
