@@ -8,9 +8,7 @@ export default {
         layout: 'padded',
         docs: {
             description: {
-                component: `# LineChart Component
-
-A fully responsive and customisable line chart component for Vue 3 with optional area fills.
+                component: `A fully responsive and customisable line chart component with optional area fills.
 Perfect for showing trends, time series data, and continuous data visualisation.
 
 ## Features

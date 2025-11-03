@@ -8,9 +8,7 @@ export default {
         layout: 'padded',
         docs: {
             description: {
-                component: `# PieChart Component
-
-A fully responsive and highly customisable pie and donut chart component for Vue 3.
+                component: `A fully responsive and highly customisable pie and donut chart component.
 
 ## Features
 - **Donut Mode**: Optional centre hole with custom labels

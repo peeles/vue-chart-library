@@ -19,14 +19,13 @@
                     aria-label="Data range selector"
                     class="relative w-full h-[60px] bg-gray-50 rounded-lg py-2.5 mt-3"
                 >
-                    <!-- Reset Button -->
                     <button
                         @click="resetRange"
-                        class="absolute left-2 top-1/2 -translate-y-1/2 px-2 py-1 text-xs font-medium text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-50 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors duration-150 z-10"
+                        class="absolute left-2 top-1/2 -translate-y-1/2 px-2 py-1 text-xs font-medium text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-50 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-1 transition-colors duration-150 z-10"
                         aria-label="Reset range to full view"
                         title="Reset to full range"
                     >
-                        Reset
+                        <FontAwesomeIcon :icon="'fa-refresh'" class="w-3 h-3" />
                     </button>
 
                     <div
@@ -37,11 +36,11 @@
                     >
                         <div
                             data-range-overlay
-                            class="absolute top-0 h-full bg-blue-500/10 border-l-2 border-r-2 border-blue-500 pointer-events-auto"
+                            class="absolute top-0 h-full bg-stone-500/10 border-l-2 border-r-2 border-stone-500 pointer-events-auto"
                             :style="rangeWindowStyle"
                         >
                             <div
-                                class="range-handle absolute top-1/2 -translate-y-1/2 w-3 h-10 bg-blue-500 rounded-md cursor-ew-resize shadow-md transition-all duration-200 ease-linear hover:bg-blue-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 -left-1.5"
+                                class="range-handle absolute top-1/2 -translate-y-1/2 w-3 h-10 bg-stone-500 rounded-md cursor-ew-resize shadow-md transition-all duration-200 ease-linear hover:bg-stone-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-stone-600 focus:ring-offset-2 -left-1.5"
                                 role="slider"
                                 tabindex="0"
                                 aria-label="Start of range"
@@ -54,7 +53,7 @@
                                 @keydown="handleKeydown($event, 'start')"
                             ></div>
                             <div
-                                class="range-handle absolute top-1/2 -translate-y-1/2 w-3 h-10 bg-blue-500 rounded-md cursor-ew-resize shadow-md transition-all duration-200 ease-linear hover:bg-blue-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 -right-1.5"
+                                class="range-handle absolute top-1/2 -translate-y-1/2 w-3 h-10 bg-stone-500 rounded-md cursor-ew-resize shadow-md transition-all duration-200 ease-linear hover:bg-stone-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-stone-600 focus:ring-offset-2 -right-1.5"
                                 role="slider"
                                 tabindex="0"
                                 aria-label="End of range"
@@ -79,6 +78,7 @@ import { computed, toRef } from 'vue'
 import LineChart from './LineChart.vue'
 import { useChartConfig } from '@/composables/useChartConfig.js'
 import { useRangeSelector } from '@/composables/useRangeSelector.js'
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 const props = defineProps({
     /**

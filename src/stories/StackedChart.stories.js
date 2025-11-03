@@ -8,9 +8,7 @@ export default {
         layout: 'padded',
         docs: {
             description: {
-                component: `# StackedChart Component
-
-A responsive stacked bar chart component for visualising composition across categories.
+                component: `A responsive stacked bar chart component for visualising composition across categories.
 
 ## Features
 - **Responsive**: Automatically adapts to container size
