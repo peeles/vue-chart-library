@@ -10,7 +10,8 @@ import {
     faDownload,
     faExpand,
     faInfoCircle,
-    faQuestionCircle
+    faQuestionCircle,
+    faRefresh
 } from '@fortawesome/free-solid-svg-icons'
 
 // Add icons to library
@@ -22,7 +23,8 @@ library.add(
     faQuestionCircle,
     faChartBar,
     faChartLine,
-    faChartPie
+    faChartPie,
+    faRefresh
 )
 
 /**

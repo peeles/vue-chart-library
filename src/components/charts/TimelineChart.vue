@@ -1,6 +1,6 @@
 <template>
     <div class="relative flex flex-col gap-4 w-full">
-        <LineChart
+        <line-chart
             :data="visibleData"
             :height="height"
             :options="chartOptions"
@@ -15,37 +15,70 @@
             >
                 <div
                     id="range-selector"
+                    role="group"
+                    aria-label="Data range selector"
                     class="relative w-full h-[60px] bg-gray-50 rounded-lg py-2.5 mt-3"
                 >
+                    <button
+                        @click="resetRange"
+                        class="absolute left-2 top-1/2 -translate-y-1/2 px-2 py-1 text-xs font-medium text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-50 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-1 transition-colors duration-150 z-10"
+                        aria-label="Reset range to full view"
+                        title="Reset to full range"
+                    >
+                        <FontAwesomeIcon :icon="'fa-refresh'" class="w-3 h-3" />
+                    </button>
+
                     <div
                         id="range-overlay"
+                        data-range-selector
                         class="absolute top-0 bottom-0 pointer-events-none"
                         :style="{ left: `${chartPadding.left}px`, right: '0' }"
                     >
                         <div
-                            class="absolute top-0 h-full bg-blue-500/10 border-l-2 border-r-2 border-blue-500 pointer-events-auto"
+                            data-range-overlay
+                            class="absolute top-0 h-full bg-stone-500/10 border-l-2 border-r-2 border-stone-500 pointer-events-auto"
                             :style="rangeWindowStyle"
                         >
                             <div
-                                class="range-handle absolute top-1/2 -translate-y-1/2 w-3 h-10 bg-blue-500 rounded-md cursor-ew-resize shadow-md transition-all duration-200 ease-linear hover:bg-blue-600 hover:shadow-lg -left-1.5"
+                                class="range-handle absolute top-1/2 -translate-y-1/2 w-3 h-10 bg-stone-500 rounded-md cursor-ew-resize shadow-md transition-all duration-200 ease-linear hover:bg-stone-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-stone-600 focus:ring-offset-2 -left-1.5"
+                                role="slider"
+                                tabindex="0"
+                                aria-label="Start of range"
+                                :aria-valuenow="Math.round(rangeStart)"
+                                :aria-valuetext="`${visibleData.labels[visibleDataRange.startIndex] || 'Start'}`"
+                                aria-valuemin="0"
+                                :aria-valuemax="Math.round(rangeEnd - 5)"
                                 @mousedown="startDrag('start', $event)"
+                                @touchstart="startDrag('start', $event)"
+                                @keydown="handleKeydown($event, 'start')"
                             ></div>
                             <div
-                                class="range-handle absolute top-1/2 -translate-y-1/2 w-3 h-10 bg-blue-500 rounded-md cursor-ew-resize shadow-md transition-all duration-200 ease-linear hover:bg-blue-600 hover:shadow-lg -right-1.5"
+                                class="range-handle absolute top-1/2 -translate-y-1/2 w-3 h-10 bg-stone-500 rounded-md cursor-ew-resize shadow-md transition-all duration-200 ease-linear hover:bg-stone-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-stone-600 focus:ring-offset-2 -right-1.5"
+                                role="slider"
+                                tabindex="0"
+                                aria-label="End of range"
+                                :aria-valuenow="Math.round(rangeEnd)"
+                                :aria-valuetext="`${visibleData.labels[visibleDataRange.endIndex - 1] || 'End'}`"
+                                :aria-valuemin="Math.round(rangeStart + 5)"
+                                aria-valuemax="100"
                                 @mousedown="startDrag('end', $event)"
+                                @touchstart="startDrag('end', $event)"
+                                @keydown="handleKeydown($event, 'end')"
                             ></div>
                         </div>
                     </div>
                 </div>
             </template>
-        </LineChart>
+        </line-chart>
     </div>
 </template>
 
 <script setup>
-import {computed, onUnmounted, ref, toRef} from 'vue'
+import { computed, toRef } from 'vue'
 import LineChart from './LineChart.vue'
-import {useChartConfig} from '@/composables/useChartConfig.js'
+import { useChartConfig } from '@/composables/useChartConfig.js'
+import { useRangeSelector } from '@/composables/useRangeSelector.js'
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 const props = defineProps({
     /**
@@ -90,13 +123,27 @@ const emit = defineEmits(['point-click', 'legend-toggle', 'range-change'])
 const optionsRef = toRef(props, 'options')
 const { config, padding: chartPadding } = useChartConfig(optionsRef)
 
-// Range selector state
-const rangeStart = ref(0)
-const rangeEnd = ref(100)
-const isDragging = ref(false)
-const dragType = ref(null)
-const dragStartX = ref(0)
-const dragStartValue = ref(0)
+// Range selector with drag, touch, and keyboard support
+const {
+    rangeStart,
+    rangeEnd,
+    rangeWindowStyle,
+    startDrag,
+    handleKeydown,
+    resetRange
+} = useRangeSelector({
+    initialStart: 0,
+    initialEnd: 100,
+    minWidth: 5,
+    onChange: (range) => {
+        emit('range-change', {
+            start: range.start,
+            end: range.end,
+            startIndex: visibleDataRange.value.startIndex,
+            endIndex: visibleDataRange.value.endIndex
+        })
+    }
+})
 
 // Calculate visible data range
 const visibleDataRange = computed(() => {
@@ -139,70 +186,12 @@ const chartOptions = computed(() => {
                 ...config.value.scales?.x,
                 type: 'category',
                 position: 'bottom',
-                flush: true,
+                flush: true
             }
         }
     }
 })
 
-// Range window styling
-const rangeWindowStyle = computed(() => {
-    return {
-        left: `${rangeStart.value}%`,
-        width: `${rangeEnd.value - rangeStart.value}%`
-    }
-})
-
-// Drag handlers
-function startDrag(type, event) {
-    isDragging.value = true
-    dragType.value = type
-    dragStartX.value = event.clientX
-    dragStartValue.value = type === 'start' ? rangeStart.value : rangeEnd.value
-
-    document.addEventListener('mousemove', handleDrag)
-    document.addEventListener('mouseup', stopDrag)
-
-    event.preventDefault()
-}
-
-function handleDrag(event) {
-    if (!isDragging.value) return
-
-    const container = event.target.closest('#range-overlay') || event.target.closest('#range-selector')
-    if (!container) return
-
-    const rect = container.getBoundingClientRect()
-    const deltaX = event.clientX - dragStartX.value
-    const deltaPercent = (deltaX / rect.width) * 100
-
-    if (dragType.value === 'start') {
-        rangeStart.value = Math.max(0, Math.min(rangeEnd.value - 5, dragStartValue.value + deltaPercent))
-    } else if (dragType.value === 'end') {
-        rangeEnd.value = Math.min(100, Math.max(rangeStart.value + 5, dragStartValue.value + deltaPercent))
-    }
-
-    emit('range-change', {
-        start: rangeStart.value,
-        end: rangeEnd.value,
-        startIndex: visibleDataRange.value.startIndex,
-        endIndex: visibleDataRange.value.endIndex
-    })
-}
-
-function stopDrag() {
-    isDragging.value = false
-    dragType.value = null
-
-    document.removeEventListener('mousemove', handleDrag)
-    document.removeEventListener('mouseup', stopDrag)
-}
-
-onUnmounted(() => {
-    stopDrag()
-    document.removeEventListener('mousemove', handleDrag)
-    document.removeEventListener('mouseup', stopDrag)
-})
 </script>
 
 <style>

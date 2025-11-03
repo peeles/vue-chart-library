@@ -8,57 +8,99 @@
         @legend-toggle="handleLegendToggle"
     >
         <template #default="{ chartArea }">
-            <!-- Y Axis -->
-            <chart-axis
-                v-if="scales.y?.display !== false"
-                :chart-area="chartArea"
-                :show-grid="scales.y?.grid?.display !== false"
-                :show-labels="scales.y?.ticks?.display !== false"
-                :show-line="true"
-                :show-ticks="scales.y?.ticks?.display !== false"
-                :ticks="getYAxisTicks(chartArea)"
-                axis="y"
-            />
-
-            <!-- X Axis -->
-            <chart-axis
-                v-if="scales.x?.display !== false"
-                :chart-area="chartArea"
-                :show-grid="scales.x?.grid?.display !== false"
-                :show-labels="scales.x?.ticks?.display !== false"
-                :show-line="true"
-                :show-ticks="scales.x?.ticks?.display !== false"
-                :ticks="getXAxisTicks(chartArea)"
-                axis="x"
-            />
-
-            <!-- Stacked Bars -->
-            <g class="stacked-bars-group">
-                <g
-                    v-for="(labelGroup, labelIndex) in getStackedBarsForRender(chartArea)"
-                    :key="labelIndex"
-                    :class="`label-group-${labelIndex}`"
+            <!-- Empty State -->
+            <g v-if="isEmpty">
+                <text
+                    :x="chartArea.x + chartArea.width / 2"
+                    :y="chartArea.y + chartArea.height / 2"
+                    text-anchor="middle"
+                    dominant-baseline="middle"
+                    class="text-gray-500"
+                    font-size="14"
                 >
-                    <rect
-                        v-for="(bar, datasetIndex) in labelGroup"
-                        :key="datasetIndex"
-                        :aria-label="`${data.labels[labelIndex]}: ${bar.dataset.label} - ${bar.value}`"
-                        :class="{ 'cursor-pointer stacked-bar-interactive-hover': isInteractive }"
-                        :fill="bar.color"
-                        :height="bar.height"
-                        :stroke="bar.borderColor"
-                        :stroke-width="bar.borderWidth"
-                        :width="bar.width"
-                        :x="bar.x"
-                        :y="bar.y"
-                        class="stacked-bar transition-opacity duration-200 ease-linear"
-                        role="graphics-symbol"
-                        @click="handleBarClick(labelIndex, datasetIndex, bar.value)"
-                        @mouseenter="handleBarHover(labelIndex, datasetIndex, bar.value, $event)"
-                        @mouseleave="handleBarLeave"
+                    No data to display
+                </text>
+            </g>
+
+            <!-- Invalid Data State -->
+            <g v-else-if="!isValid">
+                <text
+                    :x="chartArea.x + chartArea.width / 2"
+                    :y="chartArea.y + chartArea.height / 2 - 10"
+                    text-anchor="middle"
+                    dominant-baseline="middle"
+                    class="text-red-500"
+                    font-size="14"
+                    font-weight="600"
+                >
+                    Invalid chart data
+                </text>
+                <text
+                    :x="chartArea.x + chartArea.width / 2"
+                    :y="chartArea.y + chartArea.height / 2 + 15"
+                    text-anchor="middle"
+                    dominant-baseline="middle"
+                    class="text-gray-500"
+                    font-size="12"
+                >
+                    Please check that data and labels are properly formatted
+                </text>
+            </g>
+
+            <!-- Chart Content -->
+            <g v-else>
+                <!-- Y Axis -->
+                <chart-axis
+                    v-if="scales.y?.display !== false"
+                    :chart-area="chartArea"
+                    :show-grid="scales.y?.grid?.display !== false"
+                    :show-labels="scales.y?.ticks?.display !== false"
+                    :show-line="true"
+                    :show-ticks="scales.y?.ticks?.display !== false"
+                    :ticks="getYAxisTicks(chartArea)"
+                    axis="y"
+                />
+
+                <!-- X Axis -->
+                <chart-axis
+                    v-if="scales.x?.display !== false"
+                    :chart-area="chartArea"
+                    :show-grid="scales.x?.grid?.display !== false"
+                    :show-labels="scales.x?.ticks?.display !== false"
+                    :show-line="true"
+                    :show-ticks="scales.x?.ticks?.display !== false"
+                    :ticks="getXAxisTicks(chartArea)"
+                    axis="x"
+                />
+
+                <!-- Stacked Bars -->
+                <g class="stacked-bars-group">
+                    <g
+                        v-for="(labelGroup, labelIndex) in getStackedBarsForRender(chartArea)"
+                        :key="labelIndex"
+                        :class="`label-group-${labelIndex}`"
                     >
-                        <title>{{ data.labels[labelIndex] }}: {{ bar.dataset.label }} - {{ bar.value }}</title>
-                    </rect>
+                        <rect
+                            v-for="(bar, datasetIndex) in labelGroup"
+                            :key="datasetIndex"
+                            :aria-label="`${data.labels[labelIndex]}: ${bar.dataset.label} - ${bar.value}`"
+                            :class="{ 'cursor-pointer chart-stacked-bar-interactive-hover': isInteractive }"
+                            :fill="bar.color"
+                            :height="bar.height"
+                            :stroke="bar.borderColor"
+                            :stroke-width="bar.borderWidth"
+                            :width="bar.width"
+                            :x="bar.x"
+                            :y="bar.y"
+                            class="chart-stacked-bar transition-opacity duration-200 ease-linear"
+                            role="graphics-symbol"
+                            @click="handleBarClick(labelIndex, datasetIndex, bar.value)"
+                            @mouseenter="handleBarHover(labelIndex, datasetIndex, bar.value, $event)"
+                            @mouseleave="handleBarLeave"
+                        >
+                            <title>{{ data.labels[labelIndex] }}: {{ bar.dataset.label }} - {{ bar.value }}</title>
+                        </rect>
+                    </g>
                 </g>
             </g>
 
@@ -81,7 +123,8 @@ import ChartTooltip from '@/components/shared/ChartTooltip.vue'
 import { useChartConfig } from '@/composables/useChartConfig.js'
 import { useChartData } from '@/composables/useChartData.js'
 import { useChartScale } from '@/composables/useChartScale.js'
-import { calculateBarWidth } from '@/utils/chartCalculations.js'
+import { useDatasetVisibility } from '@/composables/useDatasetVisibility.js'
+import { useBarDimensions } from '@/composables/useBarDimensions.js'
 
 const props = defineProps({
     /**
@@ -120,19 +163,16 @@ const optionsRef = toRef(props, 'options')
 const dataRef = toRef(props, 'data')
 
 const { config, scales } = useChartConfig(optionsRef)
-const { normalisedDatasets, labels } = useChartData(dataRef, optionsRef)
+const { normalisedDatasets, labels, isValid, isEmpty } = useChartData(dataRef, optionsRef)
 
-const disabledDatasets = ref(new Set())
+// Dataset visibility management
+const { visibleDatasets, handleLegendToggle: toggleDatasetVisibility } = useDatasetVisibility(normalisedDatasets)
+
 const tooltip = ref({
     visible: false,
     data: null,
     x: 0,
     y: 0
-})
-
-// Filter visible datasets
-const visibleDatasets = computed(() => {
-    return normalisedDatasets.value.filter((_, index) => !disabledDatasets.value.has(index))
 })
 
 // Use chart scale composable
@@ -142,6 +182,14 @@ const {
     valueToY,
     valueToHeight
 } = useChartScale(visibleDatasets, computed(() => ({ stacked: true })), scales)
+
+// Use bar dimensions composable
+const { getBarWidth, getBarX } = useBarDimensions({
+    labels,
+    visibleDatasets,
+    gapRatio: 0.3,
+    stacked: true
+})
 
 const isInteractive = computed(() => {
     return config.value.plugins?.tooltip?.enabled !== false
@@ -191,10 +239,9 @@ function calculateBarDimensions(labelIndex, bar, chartArea) {
     const labelCount = labels.value.length
     if (labelCount === 0) return { x: 0, y: 0, width: 0, height: 0 }
 
-    const groupWidth = chartArea.width / labelCount
-    const barWidth = calculateBarWidth(groupWidth, 1, 0.3) // Single bar per label
-    const groupStart = chartArea.x + groupWidth * labelIndex
-    const x = groupStart + (groupWidth - barWidth) / 2
+    // Use composable functions for x position and width
+    const x = getBarX(labelIndex, 0, chartArea) // datasetIndex 0 for stacked
+    const barWidth = getBarWidth(chartArea)
 
     // Calculate Y position based on cumulative value
     const stackTop = bar.cumulativeValue + bar.value
@@ -251,40 +298,8 @@ function handleBarClick(labelIndex, datasetIndex, value) {
 }
 
 function handleLegendToggle(event) {
-    if (disabledDatasets.value.has(event.index)) {
-        disabledDatasets.value.delete(event.index)
-    } else {
-        disabledDatasets.value.add(event.index)
-    }
+    toggleDatasetVisibility(event)
     emit('legend-toggle', event)
 }
 </script>
 
-<style>
-/* SVG-specific animations and transforms that can't be replicated with Tailwind */
-.stacked-bar {
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.05));
-    animation: barGrowth 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
-    transform-origin: bottom;
-}
-
-@keyframes barGrowth {
-    from {
-        transform: scaleY(0);
-        opacity: 0;
-    }
-    to {
-        transform: scaleY(1);
-        opacity: 1;
-    }
-}
-
-.stacked-bar-interactive-hover:hover {
-    opacity: 0.85;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-.stacked-bar-interactive-hover:active {
-    opacity: 1;
-}
-</style>

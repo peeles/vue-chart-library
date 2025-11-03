@@ -33,7 +33,7 @@
             :visible="isLoading"
         />
 
-        <slot name="additional_controls" />
+        <slot name="additional_controls"></slot>
     </div>
 </template>
 

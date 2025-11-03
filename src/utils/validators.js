@@ -1,7 +1,12 @@
 /**
- * Validates chart data structure
- * @param {Object} data - Chart data object
- * @returns {boolean} - True if valid
+ * Validates chart data structure according to Chart.js pattern
+ * Ensures data has required labels and datasets arrays with matching lengths
+ * @param {import('../types.js').ChartData} data - Chart data object to validate
+ * @returns {boolean} True if data structure is valid, false otherwise
+ * @example
+ * validateChartData({ labels: ['A', 'B'], datasets: [{ data: [1, 2] }] }) // Returns: true
+ * validateChartData({ labels: ['A'], datasets: [{ data: [1, 2] }] }) // Returns: false (length mismatch)
+ * validateChartData({}) // Returns: false (missing required fields)
  */
 export function validateChartData(data) {
     if (!data || typeof data !== 'object') {
@@ -28,9 +33,14 @@ export function validateChartData(data) {
 }
 
 /**
- * Validates chart options
- * @param {Object} options - Chart options object
- * @returns {boolean} - True if valid
+ * Validates chart options object
+ * Options are optional, so null/undefined is considered valid
+ * @param {import('../types.js').ChartOptions|null|undefined} options - Chart options object to validate
+ * @returns {boolean} True if options are valid or not provided, false if invalid
+ * @example
+ * validateChartOptions({ responsive: true }) // Returns: true
+ * validateChartOptions(null) // Returns: true (options are optional)
+ * validateChartOptions("invalid") // Returns: false (not an object)
  */
 export function validateChartOptions(options) {
     if (!options) {
@@ -45,9 +55,14 @@ export function validateChartOptions(options) {
 }
 
 /**
- * Validates numeric data
- * @param {Array} data - Array of numbers
- * @returns {boolean} - True if all values are numbers
+ * Validates that all data values are valid numbers
+ * Checks for numeric type and filters out NaN values
+ * @param {number[]} data - Array of numbers to validate
+ * @returns {boolean} True if all values are valid numbers, false otherwise
+ * @example
+ * validateNumericData([1, 2, 3]) // Returns: true
+ * validateNumericData([1, "2", 3]) // Returns: false (string "2")
+ * validateNumericData([1, NaN, 3]) // Returns: false (NaN)
  */
 export function validateNumericData(data) {
     if (!Array.isArray(data)) {
@@ -60,9 +75,16 @@ export function validateNumericData(data) {
 }
 
 /**
- * Validates color value (hex, rgb, rgba, named)
- * @param {string} color - Color value
- * @returns {boolean} - True if valid color
+ * Validates color value format (hex, rgb, rgba, or common named colors)
+ * @param {string} color - Color value to validate
+ * @returns {boolean} True if color format is valid, false otherwise
+ * @example
+ * validateColor("#3b82f6") // Returns: true (hex)
+ * validateColor("#fff") // Returns: true (short hex)
+ * validateColor("rgb(59, 130, 246)") // Returns: true
+ * validateColor("rgba(59, 130, 246, 0.5)") // Returns: true
+ * validateColor("red") // Returns: true (named color)
+ * validateColor("invalid") // Returns: false
  */
 export function validateColor(color) {
     if (!color || typeof color !== 'string') {
@@ -92,10 +114,15 @@ export function validateColor(color) {
 }
 
 /**
- * Validates dataset structure
- * @param {Object} dataset - Dataset object
- * @param {number} expectedLength - Expected data length
- * @returns {boolean} - True if valid
+ * Validates dataset object structure and optionally checks data length
+ * @param {import('../types.js').Dataset} dataset - Dataset object to validate
+ * @param {number} [expectedLength] - Expected data array length (optional)
+ * @returns {boolean} True if dataset is valid, false otherwise
+ * @example
+ * validateDataset({ data: [1, 2, 3] }) // Returns: true
+ * validateDataset({ data: [1, 2] }, 2) // Returns: true (length matches)
+ * validateDataset({ data: [1, 2] }, 3) // Returns: false (length mismatch)
+ * validateDataset({}) // Returns: false (no data array)
  */
 export function validateDataset(dataset, expectedLength) {
     if (!dataset || typeof dataset !== 'object') {

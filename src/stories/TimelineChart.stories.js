@@ -1,16 +1,14 @@
-import AreaChart from '../components/charts/AreaChart.vue'
+import TimelineChart from '../components/charts/TimelineChart.vue'
 
 export default {
-    title: 'Charts/AreaChart',
-    component: AreaChart,
+    title: 'Charts/TimelineChart',
+    component: TimelineChart,
     parameters: {
         layout: 'padded',
         docs: {
             description: {
-                component: `# AreaChart Component
-
-An advanced area chart component with range selector and flush x-axis labels.
-Perfect for time series data visualization with interactive zoom and pan capabilities.
+                component: `An advanced area chart component with range selector and flush x-axis labels.
+Perfect for time series data visualisation with interactive zoom and pan capabilities.
 
 ## Features
 - **Range Selector**: Interactive slider to zoom into specific date ranges
@@ -20,7 +18,7 @@ Perfect for time series data visualization with interactive zoom and pan capabil
 
 ## Installation
 \`\`\`js
-import { AreaChart } from '@vue-charts/core'
+import { TimelineChart } from '@vue-charts/core'
 import '@vue-charts/core/style.css'
 \`\`\`
 `
@@ -45,7 +43,7 @@ import '@vue-charts/core/style.css'
 
 export const Default = {
     render: (args) => ({
-        components: { AreaChart },
+        components: { AreaChart: TimelineChart },
         setup() {
             return { args }
         },
@@ -103,7 +101,7 @@ export const Default = {
             },
             plugins: {
                 legend: {
-                    display: false,
+                    display: false
                 }
             }
         },
@@ -113,57 +111,6 @@ export const Default = {
         docs: {
             description: {
                 story: 'Default ApexCharts-style area chart with range selector for interactive exploration.'
-            }
-        }
-    }
-}
-
-export const WithoutRangeSelector = {
-    render: (args) => ({
-        components: { AreaChart },
-        setup() {
-            return { args }
-        },
-        template: `
-            <div style="width: 100%; height: 400px; padding: 20px;">
-                <area-chart v-bind="args" />
-            </div>
-        `
-    }),
-    args: {
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-                label: 'Revenue',
-                data: [30, 45, 35, 55, 50, 65],
-                borderColor: '#3b82f6',
-                backgroundColor: '#3b82f6',
-                borderWidth: 3,
-                fill: true,
-                fillOpacity: 0.2,
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                x: {
-                    flush: true
-                }
-            }
-        },
-        showRangeSelector: false
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Area chart without the range selector, ideal for static datasets.'
             }
         }
     }

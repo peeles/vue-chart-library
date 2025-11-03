@@ -1,10 +1,11 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 
 /**
- * Debounce function for resize events
+ * Internal debounce function for resize events
+ * @private
  * @param {Function} func - Function to debounce
- * @param {number} wait - Wait time in ms
- * @returns {Function} - Debounced function
+ * @param {number} [wait=16] - Wait time in milliseconds (default ~60fps)
+ * @returns {Function} Debounced function
  */
 function debounce(func, wait = 16) {
     let timeout
@@ -19,10 +20,20 @@ function debounce(func, wait = 16) {
 }
 
 /**
- * Composable for handling chart resize
- * @param {Object} containerRef - Ref to container element
- * @param {Function} callback - Optional callback when resize occurs
- * @returns {Object} - {width, height}
+ * Composable for handling chart container resize with ResizeObserver
+ * Automatically tracks container dimensions and updates on resize with debouncing
+ * @param {import('vue').Ref<HTMLElement|null>} containerRef - Ref to container element
+ * @param {((dimensions: import('../types.js').Dimensions) => void)|null} [callback=null] - Optional callback when resize occurs
+ * @returns {{
+ *   width: import('vue').Ref<number>,
+ *   height: import('vue').Ref<number>,
+ *   updateDimensions: () => void
+ * }} Object containing reactive width, height, and update function
+ * @example
+ * const container = ref(null)
+ * const { width, height } = useChartResize(container, ({ width, height }) => {
+ *   console.log('Resized to:', width, height)
+ * })
  */
 export function useChartResize(containerRef, callback = null) {
     const width = ref(0)

@@ -1,5 +1,5 @@
 // Chart components
-export { default as AreaChart } from './components/charts/AreaChart.vue'
+export { default as TimelineChart } from './components/charts/TimelineChart.vue'
 export { default as BarChart } from './components/charts/BarChart.vue'
 export { default as LineChart } from './components/charts/LineChart.vue'
 export { default as PieChart } from './components/charts/PieChart.vue'

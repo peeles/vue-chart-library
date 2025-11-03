@@ -8,7 +8,47 @@
         @legend-toggle="handleLegendToggle"
     >
         <template #default="{ chartArea }">
-            <g :transform="`translate(${centerX(chartArea)}, ${centerY(chartArea)})`">
+            <!-- Empty State -->
+            <g v-if="isEmpty">
+                <text
+                    :x="chartArea.x + chartArea.width / 2"
+                    :y="chartArea.y + chartArea.height / 2"
+                    text-anchor="middle"
+                    dominant-baseline="middle"
+                    class="text-gray-500"
+                    font-size="14"
+                >
+                    No data to display
+                </text>
+            </g>
+
+            <!-- Invalid Data State -->
+            <g v-else-if="!isValid">
+                <text
+                    :x="chartArea.x + chartArea.width / 2"
+                    :y="chartArea.y + chartArea.height / 2 - 10"
+                    text-anchor="middle"
+                    dominant-baseline="middle"
+                    class="text-red-500"
+                    font-size="14"
+                    font-weight="600"
+                >
+                    Invalid chart data
+                </text>
+                <text
+                    :x="chartArea.x + chartArea.width / 2"
+                    :y="chartArea.y + chartArea.height / 2 + 15"
+                    text-anchor="middle"
+                    dominant-baseline="middle"
+                    class="text-gray-500"
+                    font-size="12"
+                >
+                    Please check that data and labels are properly formatted
+                </text>
+            </g>
+
+            <!-- Chart Content -->
+            <g v-else :transform="`translate(${centerX(chartArea)}, ${centerY(chartArea)})`">
                 <!-- Pie Slices -->
                 <g class="pie-slices">
                     <g
@@ -20,15 +60,15 @@
                         <path
                             :aria-label="`${slice.label}: ${slice.value} (${slice.percentage.toFixed(1)}%)`"
                             :class="{
-                                'cursor-pointer pie-slice-interactive-hover': isInteractive,
-                                'pie-slice-hovered': hoveredIndex === index
+                                'cursor-pointer chart-pie-slice-interactive-hover': isInteractive,
+                                'chart-pie-slice-hovered': hoveredIndex === index
                             }"
                             :d="slice.path"
                             :fill="slice.color"
                             :stroke="slice.borderColor"
                             :stroke-width="borderWidth"
                             :transform="getSliceTransform(slice)"
-                            class="pie-slice transition-all duration-300 ease-linear cursor-default"
+                            class="chart-pie-slice transition-all duration-300 ease-linear cursor-default"
                             role="graphics-symbol"
                             @click="handleSliceClick(index, slice)"
                             @mouseenter="handleSliceHover(index, slice, $event)"
@@ -173,7 +213,7 @@ const optionsRef = toRef(props, 'options')
 const dataRef = toRef(props, 'data')
 
 const { config } = useChartConfig(optionsRef)
-const { normalisedDatasets, labels } = useChartData(dataRef, optionsRef)
+const { normalisedDatasets, labels, isValid, isEmpty } = useChartData(dataRef, optionsRef)
 
 const disabledDatasets = ref(new Set())
 const hoveredIndex = ref(null)
@@ -388,32 +428,3 @@ function handleLegendToggle(event) {
 }
 </script>
 
-<style>
-/* SVG-specific animations and transforms that can't be replicated with Tailwind */
-.pie-slice {
-    animation: sliceGrow 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
-    transform-origin: center;
-}
-
-@keyframes sliceGrow {
-    from {
-        transform: scale(0);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-.pie-slice-interactive-hover:hover,
-.pie-slice-hovered {
-    opacity: 0.9;
-    filter: brightness(1.1) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
-    transform: scale(1.02);
-}
-
-.pie-slice-interactive-hover:active {
-    transform: scale(0.98);
-}
-</style>

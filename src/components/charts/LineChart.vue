@@ -1,5 +1,5 @@
 <template>
-    <BaseChart
+    <base-chart
         :data="data"
         :height="height"
         :options="options"
@@ -8,83 +8,125 @@
         @legend-toggle="handleLegendToggle"
     >
         <template #default="{ chartArea }">
-            <!-- Y Axis -->
-            <ChartAxis
-                v-if="scales.y?.display !== false"
-                :chart-area="chartArea"
-                :show-grid="scales.y?.grid?.display !== false"
-                :show-labels="scales.y?.ticks?.display !== false"
-                :show-line="true"
-                :show-ticks="scales.y?.ticks?.display !== false"
-                :ticks="getYAxisTicks(chartArea)"
-                axis="y"
-            />
-
-            <!-- X Axis -->
-            <ChartAxis
-                v-if="scales.x?.display !== false"
-                :chart-area="chartArea"
-                :show-grid="scales.x?.grid?.display !== false"
-                :show-labels="scales.x?.ticks?.display !== false"
-                :show-line="true"
-                :show-ticks="scales.x?.ticks?.display !== false"
-                :ticks="getXAxisTicks(chartArea)"
-                axis="x"
-            />
-
-            <!-- Lines with Area Fills -->
-            <g class="lines-group">
-                <g
-                    v-for="(dataset, datasetIndex) in visibleDatasets"
-                    :key="datasetIndex"
-                    :class="`dataset-${datasetIndex}`"
+            <!-- Empty State -->
+            <g v-if="isEmpty">
+                <text
+                    :x="chartArea.x + chartArea.width / 2"
+                    :y="chartArea.y + chartArea.height / 2"
+                    text-anchor="middle"
+                    dominant-baseline="middle"
+                    class="text-gray-500"
+                    font-size="14"
                 >
-                    <!-- Area Fill -->
-                    <path
-                        v-if="dataset.fill"
-                        :d="getAreaPath(dataset, datasetIndex, chartArea)"
-                        :fill="dataset.backgroundColor || dataset.borderColor"
-                        :opacity="dataset.fillOpacity || 0.2"
-                        class="line-area transition-opacity duration-200 ease-linear"
-                    />
+                    No data to display
+                </text>
+            </g>
 
-                    <!-- Line Path -->
-                    <path
-                        :class="{ 'cursor-pointer': isInteractive, 'line-path-interactive-hover': isInteractive }"
-                        :d="getLinePath(dataset, datasetIndex, chartArea)"
-                        :stroke="dataset.borderColor"
-                        :stroke-dasharray="dataset.borderDash?.join(',') || ''"
-                        :stroke-width="dataset.borderWidth || 2"
-                        class="line-path transition-all duration-200 ease-linear"
-                        fill="none"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
+            <!-- Invalid Data State -->
+            <g v-else-if="!isValid">
+                <text
+                    :x="chartArea.x + chartArea.width / 2"
+                    :y="chartArea.y + chartArea.height / 2 - 10"
+                    text-anchor="middle"
+                    dominant-baseline="middle"
+                    class="text-red-500"
+                    font-size="14"
+                    font-weight="600"
+                >
+                    Invalid chart data
+                </text>
+                <text
+                    :x="chartArea.x + chartArea.width / 2"
+                    :y="chartArea.y + chartArea.height / 2 + 15"
+                    text-anchor="middle"
+                    dominant-baseline="middle"
+                    class="text-gray-500"
+                    font-size="12"
+                >
+                    Please check that data and labels are properly formatted
+                </text>
+            </g>
 
-                    <!-- Data Points -->
+            <!-- Chart Content -->
+            <g v-else>
+                <!-- Y Axis -->
+                <chart-axis
+                    v-if="scales.y?.display !== false"
+                    :chart-area="chartArea"
+                    :show-grid="scales.y?.grid?.display !== false"
+                    :show-labels="scales.y?.ticks?.display !== false"
+                    :show-line="true"
+                    :show-ticks="scales.y?.ticks?.display !== false"
+                    :ticks="getYAxisTicks(chartArea)"
+                    axis="y"
+                />
+
+                <!-- X Axis -->
+                <chart-axis
+                    v-if="scales.x?.display !== false"
+                    :chart-area="chartArea"
+                    :show-grid="scales.x?.grid?.display !== false"
+                    :show-labels="scales.x?.ticks?.display !== false"
+                    :show-line="true"
+                    :show-ticks="scales.x?.ticks?.display !== false"
+                    :ticks="getXAxisTicks(chartArea)"
+                    axis="x"
+                />
+
+                <!-- Lines with Area Fills -->
+                <g class="lines-group">
                     <g
-                        v-if="showPoints(dataset)"
-                        class="data-points"
+                        v-for="(dataset, datasetIndex) in visibleDatasets"
+                        :key="datasetIndex"
+                        :class="`dataset-${datasetIndex}`"
                     >
-                        <circle
-                            v-for="(point, pointIndex) in getDataPoints(dataset, datasetIndex, chartArea)"
-                            :key="pointIndex"
-                            :aria-label="`${data.labels[pointIndex]}: ${point.value}`"
-                            :class="{ 'cursor-pointer data-point-interactive-hover': isInteractive }"
-                            :cx="point.x"
-                            :cy="point.y"
-                            :fill="dataset.pointBackgroundColor || dataset.backgroundColor || dataset.borderColor"
-                            :r="getPointRadius(dataset)"
-                            :stroke="dataset.pointBorderColor || dataset.borderColor"
-                            :stroke-width="dataset.pointBorderWidth || 2"
-                            class="data-point transition-all duration-200 ease-linear"
-                            role="graphics-symbol"
-                            @click="handlePointClick(pointIndex, datasetIndex, point.value)"
-                            @mouseenter="handlePointHover(pointIndex, datasetIndex, point.value, $event)"
-                            @mouseleave="handlePointLeave"
+                        <!-- Area Fill -->
+                        <path
+                            v-if="dataset.fill"
+                            :d="getAreaPath(dataset, datasetIndex, chartArea)"
+                            :fill="dataset.backgroundColor || dataset.borderColor"
+                            :opacity="dataset.fillOpacity || 0.2"
+                            class="chart-line-area transition-opacity duration-200 ease-linear"
+                        />
+
+                        <!-- Line Path -->
+                        <path
+                            :class="{ 'cursor-pointer': isInteractive, 'chart-line-path-interactive-hover': isInteractive }"
+                            :d="getLinePath(dataset, datasetIndex, chartArea)"
+                            :stroke="dataset.borderColor"
+                            :stroke-dasharray="dataset.borderDash?.join(',') || ''"
+                            :stroke-width="dataset.borderWidth || 2"
+                            class="chart-line-path transition-all duration-200 ease-linear"
+                            fill="none"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+
+                        <!-- Data Points -->
+                        <g
+                            v-if="showPoints(dataset)"
+                            class="data-points"
                         >
-                            <title>{{ data.labels[pointIndex] }}: {{ point.value }}</title>
-                        </circle>
+                            <circle
+                                v-for="(point, pointIndex) in getDataPoints(dataset, datasetIndex, chartArea)"
+                                :key="pointIndex"
+                                :aria-label="`${data.labels[pointIndex]}: ${point.value}`"
+                                :class="{ 'cursor-pointer chart-data-point-interactive-hover': isInteractive }"
+                                :cx="point.x"
+                                :cy="point.y"
+                                :fill="dataset.pointBackgroundColor || dataset.backgroundColor || dataset.borderColor"
+                                :r="getPointRadius(dataset)"
+                                :stroke="dataset.pointBorderColor || dataset.borderColor"
+                                :stroke-width="dataset.pointBorderWidth || 2"
+                                class="chart-data-point transition-all duration-200 ease-linear"
+                                role="graphics-symbol"
+                                @click="handlePointClick(pointIndex, datasetIndex, point.value)"
+                                @mouseenter="handlePointHover(pointIndex, datasetIndex, point.value, $event)"
+                                @mouseleave="handlePointLeave"
+                            >
+                                <title>{{ data.labels[pointIndex] }}: {{ point.value }}</title>
+                            </circle>
+                        </g>
                     </g>
                 </g>
             </g>
@@ -98,9 +140,9 @@
             />
         </template>
         <template #additional_controls>
-            <slot name="additional_controls" />
+            <slot name="additional_controls"></slot>
         </template>
-    </BaseChart>
+    </base-chart>
 </template>
 
 <script setup>
@@ -111,6 +153,7 @@ import ChartTooltip from '@/components/shared/ChartTooltip.vue'
 import { useChartConfig } from '@/composables/useChartConfig.js'
 import { useChartData } from '@/composables/useChartData.js'
 import { useChartScale } from '@/composables/useChartScale.js'
+import { useDatasetVisibility } from '@/composables/useDatasetVisibility.js'
 
 const props = defineProps({
     /**
@@ -149,19 +192,16 @@ const optionsRef = toRef(props, 'options')
 const dataRef = toRef(props, 'data')
 
 const { config, scales } = useChartConfig(optionsRef)
-const { normalisedDatasets, labels } = useChartData(dataRef, optionsRef)
+const { normalisedDatasets, labels, isValid, isEmpty } = useChartData(dataRef, optionsRef)
 
-const disabledDatasets = ref(new Set())
+// Dataset visibility management
+const { visibleDatasets, handleLegendToggle: toggleDatasetVisibility } = useDatasetVisibility(normalisedDatasets)
+
 const tooltip = ref({
     visible: false,
     data: null,
     x: 0,
     y: 0
-})
-
-// Filter visible datasets
-const visibleDatasets = computed(() => {
-    return normalisedDatasets.value.filter((_, index) => !disabledDatasets.value.has(index))
 })
 
 // Use chart scale composable
@@ -316,66 +356,8 @@ function handlePointClick(pointIndex, datasetIndex, value) {
 }
 
 function handleLegendToggle(event) {
-    if (disabledDatasets.value.has(event.index)) {
-        disabledDatasets.value.delete(event.index)
-    } else {
-        disabledDatasets.value.add(event.index)
-    }
+    toggleDatasetVisibility(event)
     emit('legend-toggle', event)
 }
 </script>
 
-<style>
-/* SVG-specific animations that can't be replicated with Tailwind */
-.line-path {
-    stroke-dasharray: 3000;
-    stroke-dashoffset: 3000;
-    animation: lineDraw 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes lineDraw {
-    to {
-        stroke-dashoffset: 0;
-    }
-}
-
-.line-path-interactive-hover:hover {
-    stroke-width: 3;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-.line-area {
-    animation: areaFadeIn 0.8s ease-out 0.4s backwards;
-}
-
-@keyframes areaFadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-.data-point {
-    animation: pointFadeIn 0.6s ease-out backwards;
-}
-
-@keyframes pointFadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-.data-point-interactive-hover:hover {
-    r: 6;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-}
-
-.data-point-interactive-hover:active {
-    r: 5;
-}
-</style>

@@ -18,6 +18,8 @@ const preview = {
       ],
     },
   },
+    // Enables auto‑generated docs for all stories
+    tags: ['autodocs'],
 }
 
 export default preview
